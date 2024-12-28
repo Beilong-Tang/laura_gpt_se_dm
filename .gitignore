@@ -1,1 +1,7 @@
-data/*
+*.out
+*.txt
+*.err
+__pycache__/
+*test*
+*.pt
+ckpt/
