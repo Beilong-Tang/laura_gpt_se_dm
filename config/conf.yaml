@@ -1,39 +1,39 @@
 init_param: ["/public/home/qinxy/bltang/LLM_TTS/egs/exp/audio_codec-encodec-zh_en-general-16k-nq32ds640-pytorch/model.pth:quantizer.rq.model:quantizer_codebook"]
-train_shape_file: ["/public/home/qinxy/bltang/LLM_TTS/egs/exp/libritts_states/train/codec_shape"]
-valid_shape_file: ["/public/home/qinxy/bltang/LLM_TTS/egs/exp/libritts_states/dev/codec_shape"]
+train_shape_file: ["/public/home/qinxy/bltang/laura_gpt/laura_gpt_se/data/libri2mix_data/s1/funcodec/train/all_shape.scp"]
+valid_shape_file: ["/public/home/qinxy/bltang/laura_gpt/laura_gpt_se/data/libri2mix_data/s1/funcodec/dev/all_shape.scp"]
 train_data_path_and_name_and_type: [
     [
-        "/public/home/qinxy/bltang/LLM_TTS/egs/dump/libritts/train/phoneme",
+        "/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/list/train/mix.scp",
         "text",
-        "text"
+        "sound"
     ],
     [
-        "/public/home/qinxy/bltang/LLM_TTS/egs/dump/libritts/train/codec_token.scp",
+        "/public/home/qinxy/bltang/laura_gpt/laura_gpt_se/data/libri2mix_data/s1/funcodec/train/all.scp",
         "codec",
-        "kaldi_ark"
+        "npy"
     ]
 ]
 valid_data_path_and_name_and_type: [
-    [
-        "/public/home/qinxy/bltang/LLM_TTS/egs/dump/libritts/dev/phoneme",
+     [
+        "/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/list/dev/mix.scp",
         "text",
-        "text"
+        "sound"
     ],
     [
-        "/public/home/qinxy/bltang/LLM_TTS/egs/dump/libritts/dev/codec_token.scp",
+        "/public/home/qinxy/bltang/laura_gpt/laura_gpt_se/data/libri2mix_data/s1/funcodec/dev/all.scp",
         "codec",
-        "kaldi_ark"
+        "npy"
     ]
 ]
 
 grad_clip: 5
-token_list: "/public/home/qinxy/bltang/FunCodec/egs/LibriTTS/text2speech_laura/data/en_phoneme_token.list"
-token_type: "word"
+# token_list: "/public/home/qinxy/bltang/FunCodec/egs/LibriTTS/text2speech_laura/data/en_phoneme_token.list"
+# token_type: "word"
 seed: 1234
 init: null
 
 # input related
-input_size: 1536
+input_size: 128 # Mel spectrogram the input size should be 80
 use_preprocessor: true
 audio_max_duration: 60
 codec_token_rate: 25
