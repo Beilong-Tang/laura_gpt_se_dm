@@ -48,7 +48,7 @@ def main(rank, args):
     ## DDP ##
     #########
     config = get_env(args.config)
-    config.update(vars(args))
+    args.__dict__.update(config)
     config.world_size = args.world_size
     setup_seed(rank + args.seed)
     if "SLURM_PROCID" in os.environ:
