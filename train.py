@@ -50,7 +50,7 @@ def main(rank, args):
     # config = get_env(args.config)
     # # args.__dict__.update(config)
     # config.world_size = args.world_size
-    setup_seed(rank + args.seed)
+    setup_seed(args.seed, rank)
     if "SLURM_PROCID" in os.environ:
         rank = args.rank
         device = args.gpu
