@@ -1,5 +1,3 @@
-from argparse import Namespace
-
 import torch
 
 from funcodec.train.distributed_utils import DistributedOption

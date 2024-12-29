@@ -3,7 +3,7 @@ import torch
 import os
 import time
 import torch.distributed as dist
-from torch.utils.data import Subset, DataLoader
+from utils.mel_spectrogram import MelSpec
 
 from funcodec.iterators.sequence_iter_factory import SequenceIterFactory
 from funcodec.torch_utils.recursive_op import recursive_average
@@ -72,6 +72,7 @@ class Trainer:
         self.new_bob = config.new_bob
         self.cv_log = {}
         ckpt_path = load_ckpt(ckpt_dir)
+        self.mel_process = MelSpec()
         if ckpt_path is not None:
             ## loading ckpt
             self._log(f"loading model from {ckpt_path}...")
@@ -89,9 +90,14 @@ class Trainer:
 
     def _train_one_batch(self, batch, data, optim, if_log) -> dict:
         uttid, _data = data
+
+        # Mel Spectrogram Processing
+        _data["text"], _data["text_lengths"] = self.mel_process.mel(
+            _data["text"], _data["text_lengths"]
+        )
+
         for key, value in _data.items():
             _data[key] = value.cuda()
-
         ## Process Mel Spectrogram ##
         loss, stats, weight = self.model(**_data)
         loss = apply_weight_average(loss, stats, weight)
@@ -108,6 +114,11 @@ class Trainer:
 
     def _eval_one_batch(self, data) -> dict:
         uttid, _data = data
+
+        # Mel Spectrogram Processing
+        _data["text"], _data["text_lengths"] = self.mel_process.mel(
+            _data["text"], _data["text_lengths"]
+        )
         for key, value in _data.items():
             _data[key] = value.cuda()
         loss, stats, weight = self.model(**_data)
@@ -167,9 +178,9 @@ class Trainer:
                 res["epoch"] = epoch
                 res["step"] = self.step
                 res["p"] = f"[{current:>5d}/{total:>5d}]"
-                res["time/batch"] = (
-                    f"{(time.time() - start_time)*1000 / self.log_interval :.2f}ms"
-                )
+                res[
+                    "time/batch"
+                ] = f"{(time.time() - start_time)*1000 / self.log_interval :.2f}ms"
                 start_time = time.time()
                 self._log(f"tr, {dict_to_str(res)}")
             self.step += 1
