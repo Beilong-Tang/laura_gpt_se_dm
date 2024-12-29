@@ -116,7 +116,7 @@ if __name__ == "__main__":
     parser.add_argument("--log", required=True, type=str, help="Output of the log")
     parser.add_argument("--config", type=str, default=None, help="path to yaml config")
     parser.add_argument("--ckpt_path", type=str, required=True)
-    parser.add_argument("--resume", type=str, default = "")
+    parser.add_argument("--resume", type=str, nargs="?", const="")
     ##############
     # DDP Config #
     ##############
@@ -142,6 +142,7 @@ if __name__ == "__main__":
         "--local_rank", default=-1, type=int, help="local rank for distributed training"
     )
     args = parser.parse_args()
+    print(f"DEBUG: resume path {args.resume}")
     if args.config is not None:
         with open(args.config, "r") as file:
             config = yaml.safe_load(file)
