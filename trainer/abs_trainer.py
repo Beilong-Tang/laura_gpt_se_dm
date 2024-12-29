@@ -4,6 +4,7 @@ import os
 import time
 import torch.distributed as dist
 from utils.mel_spectrogram import MelSpec
+from datetime import timedelta
 
 from funcodec.iterators.sequence_iter_factory import SequenceIterFactory
 from funcodec.torch_utils.recursive_op import recursive_average
@@ -168,19 +169,20 @@ class Trainer:
 
     def _train(self, optim, tr_data, epoch):
         self.model.train()
-        total = len(tr_data) * 1
+        total = int((len(tr_data) * 1) * self.config.epoch)
         start_time = time.time()
         for batch, data in enumerate(tr_data):
             if_log = batch % self.log_interval == 0
             res = self._train_one_batch(batch, data, optim, if_log)
             if if_log:
-                current = (batch + 1) * 1
+                current = int(epoch * len(tr_data) + (batch + 1))
                 res["epoch"] = epoch
                 res["step"] = self.step
-                res["p"] = f"[{current:>5d}/{total:>5d}]"
+                time_per_batch = (time.time() - start_time) / self.log_interval
                 res[
-                    "time/batch"
-                ] = f"{(time.time() - start_time)*1000 / self.log_interval :.2f}ms"
+                    "p"
+                ] = f"[{current}/{total}|({str(timedelta(seconds=((total-current) * time_per_batch)))})]"
+                res["time/batch"] = f"{time_per_batch}s"
                 start_time = time.time()
                 self._log(f"tr, {dict_to_str(res)}")
             self.step += 1
