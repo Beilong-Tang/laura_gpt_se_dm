@@ -47,7 +47,7 @@ def main(rank, args):
     #########
     ## DDP ##
     #########
-    config = get_env(args.config_path)
+    config = get_env(args.config)
     config.update(vars(args))
     config.world_size = args.world_size
     setup_seed(rank + args.seed)
