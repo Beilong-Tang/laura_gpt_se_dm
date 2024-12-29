@@ -17,7 +17,7 @@ from funcodec.torch_utils.load_pretrained_model import load_pretrained_model
 from _funcodec import init_sequence_iter_factory
 
 from trainer.abs_trainer import Trainer
-from utils.utils import setup_logger, init,get_env, AttrDict
+from utils.utils import setup_logger, init, AttrDict
 
 def setup_seed(seed, rank):
     SEED = int(seed) + rank
@@ -47,9 +47,9 @@ def main(rank, args):
     #########
     ## DDP ##
     #########
-    config = get_env(args.config)
-    args.__dict__.update(config)
-    config.world_size = args.world_size
+    # config = get_env(args.config)
+    # # args.__dict__.update(config)
+    # config.world_size = args.world_size
     setup_seed(rank + args.seed)
     if "SLURM_PROCID" in os.environ:
         rank = args.rank
@@ -93,8 +93,6 @@ def main(rank, args):
     val_iter = init_sequence_iter_factory(args, rank, "valid")
 
     ## ckpt_dir
-    ckpt_dir = os.path.basename(args.config).replace(".yaml", "")
-
     trainer = Trainer(
         model,
         train_iter,
@@ -102,7 +100,7 @@ def main(rank, args):
         optim,
         scheduler,
         config=args,
-        ckpt_dir=f"./ckpt/{ckpt_dir}",
+        ckpt_dir=args.ckpt_path,
         rank=rank,
         logger=l,
         resume = args.resume
