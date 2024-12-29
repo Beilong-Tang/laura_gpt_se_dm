@@ -13,12 +13,9 @@ def init(module, config, *args, **kwargs):
     return getattr(module, config["type"])(*args, **kwargs, **config["args"])
 
 
-def setup_logger(args: Namespace, rank: int, out=True):
+def setup_logger(log_dir: str, rank: int, out=True):
     if out:
         now = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-        log_dir = os.path.join(
-            args.log, os.path.basename(args.config).replace(".yaml", "")
-        )
         os.makedirs(log_dir, exist_ok=True)
         logging.basicConfig(
             level=logging.INFO,
@@ -37,6 +34,7 @@ def setup_logger(args: Namespace, rank: int, out=True):
     logger = logging.getLogger()
     logger.info("logger initialized")
     return Logger(logger, rank)
+
 
 
 def update_args(args: Namespace, config_file_path: str):
@@ -85,6 +83,14 @@ def setup_seed(seed, rank):
     torch.backends.cudnn.benchmark = False
     return SEED
 
+def get_env(config_path:str):
+    """
+    config_path: str to yaml config
+    """
+    with open(config_path, "r") as f:
+        config = yaml.safe_load(f)
+    config = AttrDict(**config)
+    return config
 
 class AttrDict(Namespace):
     def __init__(self, **kwargs):

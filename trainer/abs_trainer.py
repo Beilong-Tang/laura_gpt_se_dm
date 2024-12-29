@@ -8,9 +8,9 @@ from datetime import timedelta
 
 from funcodec.iterators.sequence_iter_factory import SequenceIterFactory
 from funcodec.torch_utils.recursive_op import recursive_average
-from utils import Logger
+from utils.utils import Logger
 
-from .helper import dict_to_str, save, load_ckpt
+from .helper import dict_to_str, save
 
 
 def gather_tensors(tensor):
@@ -51,6 +51,7 @@ class Trainer:
         ckpt_dir,
         rank,
         logger: Logger,
+        resume: str
     ):
         self.model = model
         self.tr_data = tr_data
@@ -72,13 +73,12 @@ class Trainer:
         self.scheduler = scheduler
         self.new_bob = config.new_bob
         self.cv_log = {}
-        ckpt_path = load_ckpt(ckpt_dir)
+        ## Mel Spectrogram
         self.mel_process = MelSpec()
-        if ckpt_path is not None:
+        if resume != "":
             ## loading ckpt
-            self._log(f"loading model from {ckpt_path}...")
-            ckpt = torch.load(ckpt_path, map_location="cpu")
-            torch.cuda.empty_cache()
+            self._log(f"loading model from {resume}...")
+            ckpt = torch.load(resume, map_location="cpu")
             self.model.module.load_state_dict(ckpt["model_state_dict"])
             self.optim.load_state_dict(ckpt["optim"])
             self.epoch_start = ckpt["epoch"] + 1

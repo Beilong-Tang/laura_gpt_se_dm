@@ -16,7 +16,7 @@ from typing import Optional
 
 from funcodec.bin.text2audio_inference import Text2Audio, save_audio
 from funcodec.tasks.text2audio_generation import Text2AudioGenTask
-from utils import setup_logger, update_args, setup_seed
+from utils.utils import setup_logger, update_args, setup_seed
 
 
 def inference_func(

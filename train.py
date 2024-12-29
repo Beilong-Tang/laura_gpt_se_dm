@@ -17,10 +17,7 @@ from funcodec.torch_utils.load_pretrained_model import load_pretrained_model
 from _funcodec import init_sequence_iter_factory
 
 from trainer.abs_trainer import Trainer
-from utils import setup_logger
-from utils import init
-from utils import AttrDict
-
+from utils.utils import setup_logger, init,get_env, AttrDict
 
 def setup_seed(seed, rank):
     SEED = int(seed) + rank
@@ -47,15 +44,27 @@ def cleanup():
 
 def main(rank, args):
     args = AttrDict(**vars(args))
+    #########
+    ## DDP ##
+    #########
+    config = get_env(args.config_path)
+    config.update(vars(args))
+    config.world_size = args.world_size
+    setup_seed(rank + args.seed)
+    if "SLURM_PROCID" in os.environ:
+        rank = args.rank
+        device = args.gpu
+    else:
+        setup(rank, args.world_size, args.dist_backend)
+        device = rank % torch.cuda.device_count()
+        pass
+    torch.cuda.set_device(device)
+    #########
+    #########
     l = setup_logger(args, rank)
     l.info("logging initialized succesully")
     l.info(args)
     l.info(f"rank {rank} of world_size {len(args.gpus)} started...")
-    setup(rank, len(args.gpus), args.dist_backend)
-    args.gpu = args.gpus[rank]
-    torch.cuda.set_device(args.gpu)
-    torch.cuda.empty_cache()
-    setup_seed(args.seed, rank)
     l.info("setup model")
     ## load laura gpt model
     model: nn.Module = Text2AudioGenTask.build_model(args)
@@ -96,6 +105,7 @@ def main(rank, args):
         ckpt_dir=f"./ckpt/{ckpt_dir}",
         rank=rank,
         logger=l,
+        resume = args.resume
     )
     l.info("starting training!")
     trainer.train()
@@ -103,21 +113,60 @@ def main(rank, args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--log", required=True, type=str, help="Output of the log")
+    parser.add_argument("--config", type=str, default=None, help="path to yaml config")
+    parser.add_argument("--ckpt_path", type=str, required=True)
+    parser.add_argument("--resume", type=str, default = "")
+    ##############
+    # DDP Config #
+    ##############
+    parser.add_argument(
+        "--world-size",
+        default=-1,
+        type=int,
+        help="number of nodes for distributed training",
+    )
+    parser.add_argument(
+        "--rank", default=-1, type=int, help="node rank for distributed training"
+    )
+    parser.add_argument(
+        "--dist-url",
+        default="env://",
+        type=str,
+        help="url used to set up distributed training",
+    )
     parser.add_argument(
         "--dist-backend", default="nccl", type=str, help="distributed backend"
     )
-    parser.add_argument("--gpus", default="0,1,2,3", type=str, help="gpus")
-    parser.add_argument("--log", default="./log", type=str, help="Output of the log")
-    parser.add_argument("--config", type=str, default=None, help="path to yaml config")
+    parser.add_argument(
+        "--local_rank", default=-1, type=int, help="local rank for distributed training"
+    )
     args = parser.parse_args()
     if args.config is not None:
         with open(args.config, "r") as file:
             config = yaml.safe_load(file)
         for k, v in config.items():
             args.__setattr__(k, v)
-    os.environ["CUDA_VISIBLE_DEVICES"] = args.gpus
-    args.gpus = [int(i) for i in args.gpus.split(",")]
-    args.ngpu = len(args.gpus)
-
-    mp.spawn(main, args=(args,), nprocs=len(args.gpus), join=True)
-    pass
+    ###################
+    ## Running Slurm ##
+    ###################
+    if "WORLD_SIZE" in os.environ:
+        print("running slurm")
+        args.rank = int(os.environ["SLURM_PROCID"])
+        args.world_size = int(os.environ["WORLD_SIZE"])
+        args.gpu = args.rank % torch.cuda.device_count()
+        dist.init_process_group(
+            backend=args.dist_backend,
+            init_method=args.dist_url,
+            world_size=args.world_size,
+            rank=args.rank,
+        )
+        main(-1, args)
+        pass
+    #################
+    ## Running DDP ##
+    #################
+    else:
+        print("running ddp")
+        args.world_size = len(",".split(os.environ["CUDA_VISIBLE_DEVICES"]))
+        mp.spawn(main, args=(args,), nprocs=args.world_size, join=True)
