@@ -10,3 +10,9 @@ def hint_once(content, uid, rank=None):
             logging.info(content)
             HINTED.add(uid)
 
+def check_hint(uid) -> bool:
+    """
+    Check if uid is in already hinted
+    """
+    return uid in HINTED
+

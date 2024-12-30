@@ -8,6 +8,8 @@ from typing import Union
 def dict_to_str(dictionary):
     res = ""
     for key, value in dictionary.items():
+        if isinstance(value, torch.Tensor):
+            value = value.item()
         res += f"{key} : {value}, "
     return res
 

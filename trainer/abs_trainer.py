@@ -11,7 +11,7 @@ from funcodec.torch_utils.recursive_op import recursive_average
 from utils.utils import Logger
 
 from .helper import dict_to_str, save
-from utils.hinter import hint_once
+from utils.hinter import hint_once, check_hint
 
 
 def gather_tensors(tensor):
@@ -179,13 +179,11 @@ class Trainer:
             if_log = batch % self.log_interval == 0
             res = self._train_one_batch(batch, data, optim, if_log)
             if if_log:
-                current = int(epoch * len(tr_data) + (batch + 1))
                 res["epoch"] = epoch
-                res["step"] = self.step
                 time_per_batch = (time.time() - start_time) / self.log_interval
                 res[
                     "p"
-                ] = f"[{current}/{total}|({str(timedelta(seconds=((total-current) * time_per_batch)))})]"
+                ] = f"[{self.step}/{total}|({str(timedelta(seconds=((total-self.step) * time_per_batch)))})]"
                 res["time/batch"] = f"{time_per_batch}s"
                 start_time = time.time()
                 self._log(f"tr, {dict_to_str(res)}")
