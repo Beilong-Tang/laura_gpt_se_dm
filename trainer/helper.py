@@ -10,7 +10,12 @@ def dict_to_str(dictionary):
     for key, value in dictionary.items():
         if isinstance(value, torch.Tensor):
             value = value.item()
-        res += f"{key} : {value:.3f} | "
+        
+        if isinstance(value, float):
+            res += f"{key} : {value:.3f} | "
+        else:
+            res += f"{key} : {value} | "
+
     return res
 
 
