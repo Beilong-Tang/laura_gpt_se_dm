@@ -47,9 +47,6 @@ def main(rank, args):
     #########
     ## DDP ##
     #########
-    # config = get_env(args.config)
-    # # args.__dict__.update(config)
-    # config.world_size = args.world_size
     setup_seed(args.seed, rank)
     if "SLURM_PROCID" in os.environ:
         rank = args.rank
@@ -59,8 +56,12 @@ def main(rank, args):
         device = rank % torch.cuda.device_count()
         pass
     torch.cuda.set_device(device)
-    #########
-    #########
+
+    #####################
+    # LauraGPT Specific #
+    #####################
+    args.ngpu = args.world_size
+    
     l = setup_logger(args.log, rank)
     l.info("logging initialized succesully")
     l.info(args)
