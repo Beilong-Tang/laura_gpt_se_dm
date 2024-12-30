@@ -36,7 +36,6 @@ class MelSpec:
                     sr=self.fs,
                     n_fft=self.n_fft,
                     hop_length=self.hop_size,
-                    power=self.power,
                 ),
                 (1, 0),
             )
