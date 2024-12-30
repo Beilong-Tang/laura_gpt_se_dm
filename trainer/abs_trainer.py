@@ -11,6 +11,7 @@ from funcodec.torch_utils.recursive_op import recursive_average
 from utils.utils import Logger
 
 from .helper import dict_to_str, save
+from utils.hinter import hint_once
 
 
 def gather_tensors(tensor):
@@ -96,9 +97,12 @@ class Trainer:
         _data["text"], _data["text_lengths"] = self.mel_process.mel(
             _data["text"], _data["text_lengths"]
         )
-
+        data_shape = []
         for key, value in _data.items():
+            data_shape.append(f"{key}:{value.shape}")
             _data[key] = value.cuda()
+        hint_once(f"{','.join(data_shape)}", 'data_shape', 0)
+        
         ## Process Mel Spectrogram ##
         loss, stats, weight = self.model(**_data)
         loss = apply_weight_average(loss, stats, weight)
