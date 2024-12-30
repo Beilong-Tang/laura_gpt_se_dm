@@ -61,7 +61,7 @@ def main(rank, args):
     torch.cuda.set_device(device)
     #########
     #########
-    l = setup_logger(args, rank)
+    l = setup_logger(args.log, rank)
     l.info("logging initialized succesully")
     l.info(args)
     l.info(f"rank {rank} of world_size {len(args.gpus)} started...")
