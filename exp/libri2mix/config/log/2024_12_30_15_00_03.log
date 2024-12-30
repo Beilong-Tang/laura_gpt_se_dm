@@ -1,0 +1,653 @@
+2024-12-30 15:00:03,949,root,INFO,logger initialized
+2024-12-30 15:00:03,949,root,INFO,logging initialized succesully
+2024-12-30 15:00:03,949,root,INFO,AttrDict(allow_variable_data_keys=False, audio_max_duration=60, batch_bins=7680, batch_size=40, batch_type='length', best_field='loss', best_save_type='descend', ckpt_path='exp/libri2mix/config/ckpt', codec_encoder='conformer', codec_encoder_conf={'output_size': 512, 'attention_heads': 8, 'linear_units': 2048, 'num_blocks': 6, 'dropout_rate': 0.1, 'positional_dropout_rate': 0.1, 'attention_dropout_rate': 0.0, 'input_layer': 'linear', 'normalize_before': True, 'rel_pos_type': 'latest', 'pos_enc_layer_type': 'rel_pos', 'selfattention_layer_type': 'rel_selfattn', 'use_cnn_module': False}, codec_token_rate=25, config='exp/libri2mix/config.yaml', dist_backend='nccl', dist_url='env://', drop_last=False, epoch=50, fold_length=[], grad_clip=5, init=None, init_param=['/public/home/qinxy/bltang/LLM_TTS/egs/exp/audio_codec-encodec-zh_en-general-16k-nq32ds640-pytorch/model.pth:quantizer.rq.model:quantizer_codebook'], input_size=128, local_rank=-1, log='exp/libri2mix/config/log', log_interval=10, max_cache_fd=32, max_cache_size=0.0, max_ckpt=1, model='laura_gen_model', model_conf={'codec_sampling_ratio': 0.5, 'lsm_weight': 0.0, 'length_normalized_loss': True, 'predict_nq': 2, 'codec_conf': {'num_quantizers': 32, 'codebook_size': 1024, 'codebook_dim': 128}, 'codec_lm_conf': {'name': 'transformer', 'pos_enc': 'rel_pos', 'selfattention_layer_type': 'rel_selfattn', 'embed_unit': 128, 'att_unit': 512, 'head': 8, 'unit': 2048, 'layer': 6, 'dropout_rate': 0.1, 'pe_type': 'uni', 'bidirectional_inputs': True, 'codec_groups': 1}}, ngpu=1, num_workers=8, optim={'type': 'Adam', 'args': {'lr': 0.001}}, rank=-1, resume='', scheduler='warmuplr', scheduler_conf={'warmup_steps': 10000}, seed=1234, sort_batch='descending', sort_in_batch='descending', text_encoder='conformer', text_encoder_conf={'output_size': 512, 'attention_heads': 8, 'linear_units': 2048, 'num_blocks': 6, 'dropout_rate': 0.1, 'positional_dropout_rate': 0.1, 'attention_dropout_rate': 0.0, 'input_layer': 'linear', 'normalize_before': True, 'rel_pos_type': 'latest', 'pos_enc_layer_type': 'rel_pos', 'selfattention_layer_type': 'rel_selfattn', 'use_cnn_module': False}, train_data_path_and_name_and_type=[['/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/list/train/mix.scp', 'text', 'sound'], ['/public/home/qinxy/bltang/laura_gpt/laura_gpt_se/data/libri2mix_data/s1/funcodec/train/all.scp', 'codec', 'npy']], train_dtype='float32', train_shape_file=['/public/home/qinxy/bltang/laura_gpt/laura_gpt_se/data/libri2mix_data/s1/funcodec/train/all_shape.scp'], use_preprocessor=True, valid_data_path_and_name_and_type=[['/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/list/dev/mix.scp', 'text', 'sound'], ['/public/home/qinxy/bltang/laura_gpt/laura_gpt_se/data/libri2mix_data/s1/funcodec/dev/all.scp', 'codec', 'npy']], valid_shape_file=['/public/home/qinxy/bltang/laura_gpt/laura_gpt_se/data/libri2mix_data/s1/funcodec/dev/all_shape.scp'], world_size=1)
+2024-12-30 15:00:03,950,root,INFO,rank 0 of world_size 1 started...
+2024-12-30 15:00:03,950,root,INFO,setup model
+2024-12-30 15:00:07,635,root,INFO,encoder self-attention layer type = relative self-attention
+2024-12-30 15:00:07,848,root,INFO,Using distributed residual vector quantization.
+2024-12-30 15:00:08,391,root,INFO,Loading pretrained params from /public/home/qinxy/bltang/LLM_TTS/egs/exp/audio_codec-encodec-zh_en-general-16k-nq32ds640-pytorch/model.pth:quantizer.rq.model:quantizer_codebook
+2024-12-30 15:00:10,936,root,WARNING,Filter out inited from pretrained dict because of name not found in target dict
+2024-12-30 15:00:10,936,root,WARNING,Filter out cluster_size from pretrained dict because of name not found in target dict
+2024-12-30 15:00:10,936,root,WARNING,Filter out embed_avg from pretrained dict because of name not found in target dict
+2024-12-30 15:00:10,937,root,INFO,Loaded src_state keys: dict_keys(['embed'])
+2024-12-30 15:00:11,853,root,INFO,model DistributedDataParallel(
+  (module): LauraGenModel(
+    (pos_emb_func): PositionalEncoding(
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (text_encoder): ConformerEncoder(
+      (embed): Sequential(
+        (0): Linear(in_features=128, out_features=512, bias=True)
+        (1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (2): Dropout(p=0.1, inplace=False)
+        (3): RelPositionalEncoding(
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (encoders): MultiSequential(
+        (0): EncoderLayer(
+          (self_attn): RelPositionMultiHeadedAttention(
+            (linear_q): Linear(in_features=512, out_features=512, bias=True)
+            (linear_k): Linear(in_features=512, out_features=512, bias=True)
+            (linear_v): Linear(in_features=512, out_features=512, bias=True)
+            (linear_out): Linear(in_features=512, out_features=512, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+          )
+          (feed_forward): PositionwiseFeedForward(
+            (w_1): Linear(in_features=512, out_features=2048, bias=True)
+            (w_2): Linear(in_features=2048, out_features=512, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (activation): Swish()
+          )
+          (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (1): EncoderLayer(
+          (self_attn): RelPositionMultiHeadedAttention(
+            (linear_q): Linear(in_features=512, out_features=512, bias=True)
+            (linear_k): Linear(in_features=512, out_features=512, bias=True)
+            (linear_v): Linear(in_features=512, out_features=512, bias=True)
+            (linear_out): Linear(in_features=512, out_features=512, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+          )
+          (feed_forward): PositionwiseFeedForward(
+            (w_1): Linear(in_features=512, out_features=2048, bias=True)
+            (w_2): Linear(in_features=2048, out_features=512, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (activation): Swish()
+          )
+          (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (2): EncoderLayer(
+          (self_attn): RelPositionMultiHeadedAttention(
+            (linear_q): Linear(in_features=512, out_features=512, bias=True)
+            (linear_k): Linear(in_features=512, out_features=512, bias=True)
+            (linear_v): Linear(in_features=512, out_features=512, bias=True)
+            (linear_out): Linear(in_features=512, out_features=512, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+          )
+          (feed_forward): PositionwiseFeedForward(
+            (w_1): Linear(in_features=512, out_features=2048, bias=True)
+            (w_2): Linear(in_features=2048, out_features=512, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (activation): Swish()
+          )
+          (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (3): EncoderLayer(
+          (self_attn): RelPositionMultiHeadedAttention(
+            (linear_q): Linear(in_features=512, out_features=512, bias=True)
+            (linear_k): Linear(in_features=512, out_features=512, bias=True)
+            (linear_v): Linear(in_features=512, out_features=512, bias=True)
+            (linear_out): Linear(in_features=512, out_features=512, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+          )
+          (feed_forward): PositionwiseFeedForward(
+            (w_1): Linear(in_features=512, out_features=2048, bias=True)
+            (w_2): Linear(in_features=2048, out_features=512, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (activation): Swish()
+          )
+          (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (4): EncoderLayer(
+          (self_attn): RelPositionMultiHeadedAttention(
+            (linear_q): Linear(in_features=512, out_features=512, bias=True)
+            (linear_k): Linear(in_features=512, out_features=512, bias=True)
+            (linear_v): Linear(in_features=512, out_features=512, bias=True)
+            (linear_out): Linear(in_features=512, out_features=512, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+          )
+          (feed_forward): PositionwiseFeedForward(
+            (w_1): Linear(in_features=512, out_features=2048, bias=True)
+            (w_2): Linear(in_features=2048, out_features=512, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (activation): Swish()
+          )
+          (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (5): EncoderLayer(
+          (self_attn): RelPositionMultiHeadedAttention(
+            (linear_q): Linear(in_features=512, out_features=512, bias=True)
+            (linear_k): Linear(in_features=512, out_features=512, bias=True)
+            (linear_v): Linear(in_features=512, out_features=512, bias=True)
+            (linear_out): Linear(in_features=512, out_features=512, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+          )
+          (feed_forward): PositionwiseFeedForward(
+            (w_1): Linear(in_features=512, out_features=2048, bias=True)
+            (w_2): Linear(in_features=2048, out_features=512, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (activation): Swish()
+          )
+          (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (after_norm): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+    )
+    (text_enc_out_layer): Linear(in_features=512, out_features=128, bias=True)
+    (lm_embedding): Embedding(2, 128)
+    (codec_lm): TransformerEmbedLM(
+      (encoder): TransformerEncoder_s0(
+        (embed): Sequential(
+          (0): Linear(in_features=128, out_features=512, bias=True)
+          (1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (2): Dropout(p=0.1, inplace=False)
+          (3): ReLU()
+          (4): RelPositionalEncoding(
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (encoders): MultiSequential(
+          (0): EncoderLayer(
+            (self_attn): RelPositionMultiHeadedAttention(
+              (linear_q): Linear(in_features=512, out_features=512, bias=True)
+              (linear_k): Linear(in_features=512, out_features=512, bias=True)
+              (linear_v): Linear(in_features=512, out_features=512, bias=True)
+              (linear_out): Linear(in_features=512, out_features=512, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (feed_forward): PositionwiseFeedForward(
+              (w_1): Linear(in_features=512, out_features=2048, bias=True)
+              (w_2): Linear(in_features=2048, out_features=512, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (activation): ReLU()
+            )
+            (norm1): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+            (norm2): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (1): EncoderLayer(
+            (self_attn): RelPositionMultiHeadedAttention(
+              (linear_q): Linear(in_features=512, out_features=512, bias=True)
+              (linear_k): Linear(in_features=512, out_features=512, bias=True)
+              (linear_v): Linear(in_features=512, out_features=512, bias=True)
+              (linear_out): Linear(in_features=512, out_features=512, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (feed_forward): PositionwiseFeedForward(
+              (w_1): Linear(in_features=512, out_features=2048, bias=True)
+              (w_2): Linear(in_features=2048, out_features=512, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (activation): ReLU()
+            )
+            (norm1): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+            (norm2): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (2): EncoderLayer(
+            (self_attn): RelPositionMultiHeadedAttention(
+              (linear_q): Linear(in_features=512, out_features=512, bias=True)
+              (linear_k): Linear(in_features=512, out_features=512, bias=True)
+              (linear_v): Linear(in_features=512, out_features=512, bias=True)
+              (linear_out): Linear(in_features=512, out_features=512, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (feed_forward): PositionwiseFeedForward(
+              (w_1): Linear(in_features=512, out_features=2048, bias=True)
+              (w_2): Linear(in_features=2048, out_features=512, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (activation): ReLU()
+            )
+            (norm1): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+            (norm2): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (3): EncoderLayer(
+            (self_attn): RelPositionMultiHeadedAttention(
+              (linear_q): Linear(in_features=512, out_features=512, bias=True)
+              (linear_k): Linear(in_features=512, out_features=512, bias=True)
+              (linear_v): Linear(in_features=512, out_features=512, bias=True)
+              (linear_out): Linear(in_features=512, out_features=512, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (feed_forward): PositionwiseFeedForward(
+              (w_1): Linear(in_features=512, out_features=2048, bias=True)
+              (w_2): Linear(in_features=2048, out_features=512, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (activation): ReLU()
+            )
+            (norm1): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+            (norm2): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (4): EncoderLayer(
+            (self_attn): RelPositionMultiHeadedAttention(
+              (linear_q): Linear(in_features=512, out_features=512, bias=True)
+              (linear_k): Linear(in_features=512, out_features=512, bias=True)
+              (linear_v): Linear(in_features=512, out_features=512, bias=True)
+              (linear_out): Linear(in_features=512, out_features=512, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (feed_forward): PositionwiseFeedForward(
+              (w_1): Linear(in_features=512, out_features=2048, bias=True)
+              (w_2): Linear(in_features=2048, out_features=512, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (activation): ReLU()
+            )
+            (norm1): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+            (norm2): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (5): EncoderLayer(
+            (self_attn): RelPositionMultiHeadedAttention(
+              (linear_q): Linear(in_features=512, out_features=512, bias=True)
+              (linear_k): Linear(in_features=512, out_features=512, bias=True)
+              (linear_v): Linear(in_features=512, out_features=512, bias=True)
+              (linear_out): Linear(in_features=512, out_features=512, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (feed_forward): PositionwiseFeedForward(
+              (w_1): Linear(in_features=512, out_features=2048, bias=True)
+              (w_2): Linear(in_features=2048, out_features=512, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (activation): ReLU()
+            )
+            (norm1): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+            (norm2): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (after_norm): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+      )
+      (decoder): Linear(in_features=512, out_features=2050, bias=True)
+    )
+    (codec_encoder): ConformerEncoder(
+      (embed): Sequential(
+        (0): Linear(in_features=128, out_features=512, bias=True)
+        (1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (2): Dropout(p=0.1, inplace=False)
+        (3): RelPositionalEncoding(
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (encoders): MultiSequential(
+        (0): EncoderLayer(
+          (self_attn): RelPositionMultiHeadedAttention(
+            (linear_q): Linear(in_features=512, out_features=512, bias=True)
+            (linear_k): Linear(in_features=512, out_features=512, bias=True)
+            (linear_v): Linear(in_features=512, out_features=512, bias=True)
+            (linear_out): Linear(in_features=512, out_features=512, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+          )
+          (feed_forward): PositionwiseFeedForward(
+            (w_1): Linear(in_features=512, out_features=2048, bias=True)
+            (w_2): Linear(in_features=2048, out_features=512, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (activation): Swish()
+          )
+          (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (1): EncoderLayer(
+          (self_attn): RelPositionMultiHeadedAttention(
+            (linear_q): Linear(in_features=512, out_features=512, bias=True)
+            (linear_k): Linear(in_features=512, out_features=512, bias=True)
+            (linear_v): Linear(in_features=512, out_features=512, bias=True)
+            (linear_out): Linear(in_features=512, out_features=512, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+          )
+          (feed_forward): PositionwiseFeedForward(
+            (w_1): Linear(in_features=512, out_features=2048, bias=True)
+            (w_2): Linear(in_features=2048, out_features=512, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (activation): Swish()
+          )
+          (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (2): EncoderLayer(
+          (self_attn): RelPositionMultiHeadedAttention(
+            (linear_q): Linear(in_features=512, out_features=512, bias=True)
+            (linear_k): Linear(in_features=512, out_features=512, bias=True)
+            (linear_v): Linear(in_features=512, out_features=512, bias=True)
+            (linear_out): Linear(in_features=512, out_features=512, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+          )
+          (feed_forward): PositionwiseFeedForward(
+            (w_1): Linear(in_features=512, out_features=2048, bias=True)
+            (w_2): Linear(in_features=2048, out_features=512, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (activation): Swish()
+          )
+          (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (3): EncoderLayer(
+          (self_attn): RelPositionMultiHeadedAttention(
+            (linear_q): Linear(in_features=512, out_features=512, bias=True)
+            (linear_k): Linear(in_features=512, out_features=512, bias=True)
+            (linear_v): Linear(in_features=512, out_features=512, bias=True)
+            (linear_out): Linear(in_features=512, out_features=512, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+          )
+          (feed_forward): PositionwiseFeedForward(
+            (w_1): Linear(in_features=512, out_features=2048, bias=True)
+            (w_2): Linear(in_features=2048, out_features=512, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (activation): Swish()
+          )
+          (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (4): EncoderLayer(
+          (self_attn): RelPositionMultiHeadedAttention(
+            (linear_q): Linear(in_features=512, out_features=512, bias=True)
+            (linear_k): Linear(in_features=512, out_features=512, bias=True)
+            (linear_v): Linear(in_features=512, out_features=512, bias=True)
+            (linear_out): Linear(in_features=512, out_features=512, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+          )
+          (feed_forward): PositionwiseFeedForward(
+            (w_1): Linear(in_features=512, out_features=2048, bias=True)
+            (w_2): Linear(in_features=2048, out_features=512, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (activation): Swish()
+          )
+          (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (5): EncoderLayer(
+          (self_attn): RelPositionMultiHeadedAttention(
+            (linear_q): Linear(in_features=512, out_features=512, bias=True)
+            (linear_k): Linear(in_features=512, out_features=512, bias=True)
+            (linear_v): Linear(in_features=512, out_features=512, bias=True)
+            (linear_out): Linear(in_features=512, out_features=512, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+          )
+          (feed_forward): PositionwiseFeedForward(
+            (w_1): Linear(in_features=512, out_features=2048, bias=True)
+            (w_2): Linear(in_features=2048, out_features=512, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (activation): Swish()
+          )
+          (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (after_norm): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+    )
+    (codec_encoder_out_layer): Linear(in_features=512, out_features=128, bias=True)
+    (quantizer_codebook): QuantizerCodebook()
+    (criterion_ce): LabelSmoothingLoss(
+      (criterion): KLDivLoss()
+    )
+    (quantizer): CostumeQuantizer(
+      (rq): ResidualVectorQuantizer(
+        (model): DistributedResidualVectorQuantization(
+          (layers): ModuleList(
+            (0): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (1): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (2): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (3): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (4): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (5): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (6): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (7): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (8): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (9): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (10): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (11): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (12): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (13): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (14): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (15): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (16): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (17): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (18): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (19): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (20): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (21): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (22): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (23): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (24): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (25): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (26): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (27): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (28): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (29): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (30): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+            (31): VectorQuantization(
+              (project_in): Identity()
+              (project_out): Identity()
+              (_codebook): EuclideanCodebook()
+            )
+          )
+        )
+      )
+    )
+  )
+) is intialized
+2024-12-30 15:00:13,770,root,INFO,scheduler WarmupLR(warmup_steps=10000) and optim Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    initial_lr: 0.001
+    lr: 1e-07
+    maximize: False
+    weight_decay: 0
+) is initialized
+2024-12-30 15:00:14,910,root,INFO,[train] dataset:
+ESPnetDataset(
+  text: {"path": "/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/list/train/mix.scp", "type": "sound"}
+  codec: {"path": "/public/home/qinxy/bltang/laura_gpt/laura_gpt_se/data/libri2mix_data/s1/funcodec/train/all.scp", "type": "npy"}
+  preprocess: <funcodec.datasets.preprocessor.Text2AudioPreprocessor object at 0x2b3484021eb0>)
+2024-12-30 15:00:14,910,root,INFO,[train] Batch sampler: LengthBatchSampler(N-batch=2299, batch_bins=7680, sort_in_batch=descending, sort_batch=descending)
+2024-12-30 15:00:15,002,root,INFO,[train] mini-batch sizes summary: N-batch=2299, mean=28.1, min=8, max=102
+2024-12-30 15:00:15,175,root,INFO,[valid] dataset:
+ESPnetDataset(
+  text: {"path": "/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/list/dev/mix.scp", "type": "sound"}
+  codec: {"path": "/public/home/qinxy/bltang/laura_gpt/laura_gpt_se/data/libri2mix_data/s1/funcodec/dev/all.scp", "type": "npy"}
+  preprocess: <funcodec.datasets.preprocessor.Text2AudioPreprocessor object at 0x2b3484021f70>)
+2024-12-30 15:00:15,175,root,INFO,[valid] Batch sampler: LengthBatchSampler(N-batch=54, batch_bins=7680, sort_in_batch=descending, sort_batch=descending)
+2024-12-30 15:00:15,176,root,INFO,[valid] mini-batch sizes summary: N-batch=54, mean=55.6, min=6, max=99
+2024-12-30 15:00:15,176,root,INFO,starting training!
+2024-12-30 15:00:15,176,root,INFO,...epoch 0...
+2024-12-30 15:01:56,190,root,INFO,text:torch.Size([22, 366, 128]),text_lengths:torch.Size([22]),codec:torch.Size([22, 365, 32]),codec_lengths:torch.Size([22])
+2024-12-30 15:02:18,741,root,INFO,tr, loss : tensor([15.8518], device='cuda:0'), nll_loss : tensor([7.0976], device='cuda:0'), reg_loss : tensor([8.7542], device='cuda:0'), reg_l1_loss : tensor([4.0467], device='cuda:0'), reg_l2_loss : tensor([13.4617], device='cuda:0'), batch_size : tensor([22], device='cuda:0'), seq_length : tensor([731], device='cuda:0'), out_acc_1 : tensor([0.0007], device='cuda:0'), out_acc_2 : tensor([0.0004], device='cuda:0'), lr : 2e-07, epoch : 0, step : 0, p : [1/114950|(16 days, 10:23:57.649317)], time/batch : 12.351892137527466s, 
+2024-12-30 15:02:19,405,torch.nn.parallel.distributed,INFO,Reducer buckets have been rebuilt in this iteration.
+2024-12-30 15:02:46,456,root,INFO,tr, loss : tensor([15.7797], device='cuda:0'), nll_loss : tensor([7.1060], device='cuda:0'), reg_loss : tensor([8.6737], device='cuda:0'), reg_l1_loss : tensor([4.0265], device='cuda:0'), reg_l2_loss : tensor([13.3210], device='cuda:0'), batch_size : tensor([28], device='cuda:0'), seq_length : tensor([563], device='cuda:0'), out_acc_1 : tensor([0.0022], device='cuda:0'), out_acc_2 : tensor([0.0023], device='cuda:0'), lr : 1.2000000000000002e-06, epoch : 0, step : 10, p : [11/114950|(3 days, 16:32:01.769565)], time/batch : 2.772964525222778s, 
+2024-12-30 15:03:14,488,root,INFO,tr, loss : tensor([15.8259], device='cuda:0'), nll_loss : tensor([7.0898], device='cuda:0'), reg_loss : tensor([8.7360], device='cuda:0'), reg_l1_loss : tensor([4.0420], device='cuda:0'), reg_l2_loss : tensor([13.4301], device='cuda:0'), batch_size : tensor([49], device='cuda:0'), seq_length : tensor([317], device='cuda:0'), out_acc_1 : tensor([0.0031], device='cuda:0'), out_acc_2 : tensor([0.0026], device='cuda:0'), lr : 2.2e-06, epoch : 0, step : 20, p : [21/114950|(3 days, 17:29:31.746548)], time/batch : 2.8032241344451903s, 
+2024-12-30 15:03:41,606,root,INFO,tr, loss : tensor([15.7249], device='cuda:0'), nll_loss : tensor([7.0785], device='cuda:0'), reg_loss : tensor([8.6464], device='cuda:0'), reg_l1_loss : tensor([4.0171], device='cuda:0'), reg_l2_loss : tensor([13.2757], device='cuda:0'), batch_size : tensor([22], device='cuda:0'), seq_length : tensor([701], device='cuda:0'), out_acc_1 : tensor([0.0032], device='cuda:0'), out_acc_2 : tensor([0.0027], device='cuda:0'), lr : 3.2e-06, epoch : 0, step : 30, p : [31/114950|(3 days, 14:33:59.717289)], time/batch : 2.711820650100708s, 
+2024-12-30 15:04:08,987,root,INFO,tr, loss : tensor([15.8320], device='cuda:0'), nll_loss : tensor([7.0793], device='cuda:0'), reg_loss : tensor([8.7527], device='cuda:0'), reg_l1_loss : tensor([4.0456], device='cuda:0'), reg_l2_loss : tensor([13.4598], device='cuda:0'), batch_size : tensor([22], device='cuda:0'), seq_length : tensor([727], device='cuda:0'), out_acc_1 : tensor([0.0015], device='cuda:0'), out_acc_2 : tensor([0.0020], device='cuda:0'), lr : 4.2e-06, epoch : 0, step : 40, p : [41/114950|(3 days, 15:23:55.327813)], time/batch : 2.7381260633468627s, 
+2024-12-30 15:04:35,614,root,INFO,tr, loss : tensor([15.6760], device='cuda:0'), nll_loss : tensor([7.0722], device='cuda:0'), reg_loss : tensor([8.6038], device='cuda:0'), reg_l1_loss : tensor([3.9967], device='cuda:0'), reg_l2_loss : tensor([13.2108], device='cuda:0'), batch_size : tensor([52], device='cuda:0'), seq_length : tensor([298], device='cuda:0'), out_acc_1 : tensor([0.0078], device='cuda:0'), out_acc_2 : tensor([0.0076], device='cuda:0'), lr : 5.2e-06, epoch : 0, step : 50, p : [51/114950|(3 days, 12:58:55.810143)], time/batch : 2.662649893760681s, 
+2024-12-30 15:05:02,550,root,INFO,tr, loss : tensor([15.6341], device='cuda:0'), nll_loss : tensor([7.0621], device='cuda:0'), reg_loss : tensor([8.5720], device='cuda:0'), reg_l1_loss : tensor([4.0004], device='cuda:0'), reg_l2_loss : tensor([13.1436], device='cuda:0'), batch_size : tensor([53], device='cuda:0'), seq_length : tensor([293], device='cuda:0'), out_acc_1 : tensor([0.0026], device='cuda:0'), out_acc_2 : tensor([0.0008], device='cuda:0'), lr : 6.200000000000001e-06, epoch : 0, step : 60, p : [61/114950|(3 days, 13:57:42.792924)], time/batch : 2.69358069896698s, 
+2024-12-30 15:05:30,195,root,INFO,tr, loss : tensor([15.7316], device='cuda:0'), nll_loss : tensor([7.0516], device='cuda:0'), reg_loss : tensor([8.6800], device='cuda:0'), reg_l1_loss : tensor([4.0275], device='cuda:0'), reg_l2_loss : tensor([13.3325], device='cuda:0'), batch_size : tensor([22], device='cuda:0'), seq_length : tensor([721], device='cuda:0'), out_acc_1 : tensor([0.0030], device='cuda:0'), out_acc_2 : tensor([0.0008], device='cuda:0'), lr : 7.2000000000000005e-06, epoch : 0, step : 70, p : [71/114950|(3 days, 16:08:51.134345)], time/batch : 2.762307596206665s, 
+2024-12-30 15:05:56,893,root,INFO,tr, loss : tensor([15.5548], device='cuda:0'), nll_loss : tensor([7.0356], device='cuda:0'), reg_loss : tensor([8.5191], device='cuda:0'), reg_l1_loss : tensor([3.9860], device='cuda:0'), reg_l2_loss : tensor([13.0523], device='cuda:0'), batch_size : tensor([42], device='cuda:0'), seq_length : tensor([367], device='cuda:0'), out_acc_1 : tensor([0.0060], device='cuda:0'), out_acc_2 : tensor([0.0018], device='cuda:0'), lr : 8.200000000000001e-06, epoch : 0, step : 80, p : [81/114950|(3 days, 13:15:23.565271)], time/batch : 2.671944260597229s, 
+2024-12-30 15:06:24,022,root,INFO,tr, loss : tensor([15.5890], device='cuda:0'), nll_loss : tensor([7.0285], device='cuda:0'), reg_loss : tensor([8.5605], device='cuda:0'), reg_l1_loss : tensor([3.9939], device='cuda:0'), reg_l2_loss : tensor([13.1270], device='cuda:0'), batch_size : tensor([21], device='cuda:0'), seq_length : tensor([739], device='cuda:0'), out_acc_1 : tensor([0.0048], device='cuda:0'), out_acc_2 : tensor([0.0019], device='cuda:0'), lr : 9.2e-06, epoch : 0, step : 90, p : [91/114950|(3 days, 14:33:30.433645)], time/batch : 2.7129822969436646s, 
+2024-12-30 15:06:51,015,root,INFO,tr, loss : tensor([15.5224], device='cuda:0'), nll_loss : tensor([7.0158], device='cuda:0'), reg_loss : tensor([8.5066], device='cuda:0'), reg_l1_loss : tensor([3.9800], device='cuda:0'), reg_l2_loss : tensor([13.0333], device='cuda:0'), batch_size : tensor([20], device='cuda:0'), seq_length : tensor([777], device='cuda:0'), out_acc_1 : tensor([0.0095], device='cuda:0'), out_acc_2 : tensor([0.0023], device='cuda:0'), lr : 1.02e-05, epoch : 0, step : 100, p : [101/114950|(3 days, 13:59:48.600143)], time/batch : 2.695614242553711s, 
+2024-12-30 15:07:17,768,root,INFO,tr, loss : tensor([15.4675], device='cuda:0'), nll_loss : tensor([6.9963], device='cuda:0'), reg_loss : tensor([8.4712], device='cuda:0'), reg_l1_loss : tensor([3.9729], device='cuda:0'), reg_l2_loss : tensor([12.9695], device='cuda:0'), batch_size : tensor([20], device='cuda:0'), seq_length : tensor([781], device='cuda:0'), out_acc_1 : tensor([0.0088], device='cuda:0'), out_acc_2 : tensor([0.0028], device='cuda:0'), lr : 1.1200000000000001e-05, epoch : 0, step : 110, p : [111/114950|(3 days, 13:27:20.486260)], time/batch : 2.6788851022720337s, 
+2024-12-30 15:07:43,661,root,INFO,tr, loss : tensor([15.4108], device='cuda:0'), nll_loss : tensor([6.9692], device='cuda:0'), reg_loss : tensor([8.4416], device='cuda:0'), reg_l1_loss : tensor([3.9639], device='cuda:0'), reg_l2_loss : tensor([12.9192], device='cuda:0'), batch_size : tensor([22], device='cuda:0'), seq_length : tensor([731], device='cuda:0'), out_acc_1 : tensor([0.0089], device='cuda:0'), out_acc_2 : tensor([0.0040], device='cuda:0'), lr : 1.22e-05, epoch : 0, step : 120, p : [121/114950|(3 days, 10:35:33.737014)], time/batch : 2.5893610239028932s, 
+2024-12-30 15:08:10,977,root,INFO,tr, loss : tensor([15.4099], device='cuda:0'), nll_loss : tensor([6.9511], device='cuda:0'), reg_loss : tensor([8.4588], device='cuda:0'), reg_l1_loss : tensor([3.9671], device='cuda:0'), reg_l2_loss : tensor([12.9504], device='cuda:0'), batch_size : tensor([23], device='cuda:0'), seq_length : tensor([669], device='cuda:0'), out_acc_1 : tensor([0.0144], device='cuda:0'), out_acc_2 : tensor([0.0064], device='cuda:0'), lr : 1.3199999999999999e-05, epoch : 0, step : 130, p : [131/114950|(3 days, 15:07:13.596054)], time/batch : 2.7315478801727293s, 
+2024-12-30 15:08:37,335,root,INFO,tr, loss : tensor([15.3041], device='cuda:0'), nll_loss : tensor([6.9134], device='cuda:0'), reg_loss : tensor([8.3907], device='cuda:0'), reg_l1_loss : tensor([3.9483], device='cuda:0'), reg_l2_loss : tensor([12.8331], device='cuda:0'), batch_size : tensor([22], device='cuda:0'), seq_length : tensor([713], device='cuda:0'), out_acc_1 : tensor([0.0171], device='cuda:0'), out_acc_2 : tensor([0.0053], device='cuda:0'), lr : 1.42e-05, epoch : 0, step : 140, p : [141/114950|(3 days, 12:03:33.469593)], time/batch : 2.635799193382263s, 
+2024-12-30 15:09:03,715,root,INFO,tr, loss : tensor([15.2205], device='cuda:0'), nll_loss : tensor([6.8814], device='cuda:0'), reg_loss : tensor([8.3391], device='cuda:0'), reg_l1_loss : tensor([3.9359], device='cuda:0'), reg_l2_loss : tensor([12.7423], device='cuda:0'), batch_size : tensor([26], device='cuda:0'), seq_length : tensor([609], device='cuda:0'), out_acc_1 : tensor([0.0208], device='cuda:0'), out_acc_2 : tensor([0.0112], device='cuda:0'), lr : 1.5199999999999998e-05, epoch : 0, step : 150, p : [151/114950|(3 days, 12:07:19.938483)], time/batch : 2.638001537322998s, 
+2024-12-30 15:09:30,864,root,INFO,tr, loss : tensor([15.0352], device='cuda:0'), nll_loss : tensor([6.7888], device='cuda:0'), reg_loss : tensor([8.2464], device='cuda:0'), reg_l1_loss : tensor([3.9094], device='cuda:0'), reg_l2_loss : tensor([12.5835], device='cuda:0'), batch_size : tensor([29], device='cuda:0'), seq_length : tensor([539], device='cuda:0'), out_acc_1 : tensor([0.0227], device='cuda:0'), out_acc_2 : tensor([0.0148], device='cuda:0'), lr : 1.6199999999999997e-05, epoch : 0, step : 160, p : [161/114950|(3 days, 14:17:25.172358)], time/batch : 2.706227707862854s, 
+2024-12-30 15:09:57,000,root,INFO,tr, loss : tensor([15.0034], device='cuda:0'), nll_loss : tensor([6.7364], device='cuda:0'), reg_loss : tensor([8.2670], device='cuda:0'), reg_l1_loss : tensor([3.9137], device='cuda:0'), reg_l2_loss : tensor([12.6203], device='cuda:0'), batch_size : tensor([21], device='cuda:0'), seq_length : tensor([739], device='cuda:0'), out_acc_1 : tensor([0.0265], device='cuda:0'), out_acc_2 : tensor([0.0100], device='cuda:0'), lr : 1.7199999999999998e-05, epoch : 0, step : 170, p : [171/114950|(3 days, 11:19:09.658084)], time/batch : 2.613279938697815s, 
+2024-12-30 15:10:25,185,root,INFO,tr, loss : tensor([14.8242], device='cuda:0'), nll_loss : tensor([6.6624], device='cuda:0'), reg_loss : tensor([8.1618], device='cuda:0'), reg_l1_loss : tensor([3.8862], device='cuda:0'), reg_l2_loss : tensor([12.4374], device='cuda:0'), batch_size : tensor([24], device='cuda:0'), seq_length : tensor([652], device='cuda:0'), out_acc_1 : tensor([0.0324], device='cuda:0'), out_acc_2 : tensor([0.0208], device='cuda:0'), lr : 1.82e-05, epoch : 0, step : 180, p : [181/114950|(3 days, 17:51:49.485895)], time/batch : 2.8187880516052246s, 
+2024-12-30 15:10:52,751,root,INFO,tr, loss : tensor([14.7191], device='cuda:0'), nll_loss : tensor([6.6287], device='cuda:0'), reg_loss : tensor([8.0904], device='cuda:0'), reg_l1_loss : tensor([3.8670], device='cuda:0'), reg_l2_loss : tensor([12.3138], device='cuda:0'), batch_size : tensor([29], device='cuda:0'), seq_length : tensor([537], device='cuda:0'), out_acc_1 : tensor([0.0264], device='cuda:0'), out_acc_2 : tensor([0.0147], device='cuda:0'), lr : 1.9200000000000003e-05, epoch : 0, step : 190, p : [191/114950|(3 days, 15:52:39.373797)], time/batch : 2.7567282199859617s, 
+2024-12-30 15:11:19,891,root,INFO,tr, loss : tensor([14.7459], device='cuda:0'), nll_loss : tensor([6.5971], device='cuda:0'), reg_loss : tensor([8.1488], device='cuda:0'), reg_l1_loss : tensor([3.8790], device='cuda:0'), reg_l2_loss : tensor([12.4186], device='cuda:0'), batch_size : tensor([21], device='cuda:0'), seq_length : tensor([737], device='cuda:0'), out_acc_1 : tensor([0.0253], device='cuda:0'), out_acc_2 : tensor([0.0179], device='cuda:0'), lr : 2.0200000000000003e-05, epoch : 0, step : 200, p : [201/114950|(3 days, 14:30:16.875403)], time/batch : 2.7138962030410765s, 
+2024-12-30 15:11:47,127,root,INFO,tr, loss : tensor([14.6570], device='cuda:0'), nll_loss : tensor([6.5735], device='cuda:0'), reg_loss : tensor([8.0835], device='cuda:0'), reg_l1_loss : tensor([3.8619], device='cuda:0'), reg_l2_loss : tensor([12.3050], device='cuda:0'), batch_size : tensor([23], device='cuda:0'), seq_length : tensor([671], device='cuda:0'), out_acc_1 : tensor([0.0316], device='cuda:0'), out_acc_2 : tensor([0.0131], device='cuda:0'), lr : 2.12e-05, epoch : 0, step : 210, p : [211/114950|(3 days, 14:48:20.586058)], time/batch : 2.7235777378082275s, 
+2024-12-30 15:12:15,107,root,INFO,tr, loss : tensor([14.5332], device='cuda:0'), nll_loss : tensor([6.5478], device='cuda:0'), reg_loss : tensor([7.9854], device='cuda:0'), reg_l1_loss : tensor([3.8346], device='cuda:0'), reg_l2_loss : tensor([12.1362], device='cuda:0'), batch_size : tensor([22], device='cuda:0'), seq_length : tensor([727], device='cuda:0'), out_acc_1 : tensor([0.0251], device='cuda:0'), out_acc_2 : tensor([0.0170], device='cuda:0'), lr : 2.22e-05, epoch : 0, step : 220, p : [221/114950|(3 days, 17:10:09.925945)], time/batch : 2.797984170913696s, 
+2024-12-30 15:12:42,882,root,INFO,tr, loss : tensor([14.3522], device='cuda:0'), nll_loss : tensor([6.4414], device='cuda:0'), reg_loss : tensor([7.9108], device='cuda:0'), reg_l1_loss : tensor([3.8129], device='cuda:0'), reg_l2_loss : tensor([12.0087], device='cuda:0'), batch_size : tensor([21], device='cuda:0'), seq_length : tensor([757], device='cuda:0'), out_acc_1 : tensor([0.0312], device='cuda:0'), out_acc_2 : tensor([0.0173], device='cuda:0'), lr : 2.32e-05, epoch : 0, step : 230, p : [231/114950|(3 days, 16:30:40.346546)], time/batch : 2.7775725603103636s, 
+2024-12-30 15:13:10,511,root,INFO,tr, loss : tensor([14.4872], device='cuda:0'), nll_loss : tensor([6.5052], device='cuda:0'), reg_loss : tensor([7.9820], device='cuda:0'), reg_l1_loss : tensor([3.8315], device='cuda:0'), reg_l2_loss : tensor([12.1325], device='cuda:0'), batch_size : tensor([22], device='cuda:0'), seq_length : tensor([715], device='cuda:0'), out_acc_1 : tensor([0.0227], device='cuda:0'), out_acc_2 : tensor([0.0267], device='cuda:0'), lr : 2.4200000000000002e-05, epoch : 0, step : 240, p : [241/114950|(3 days, 16:02:10.709794)], time/batch : 2.762910580635071s, 
+2024-12-30 15:13:37,461,root,INFO,tr, loss : tensor([14.2674], device='cuda:0'), nll_loss : tensor([6.4384], device='cuda:0'), reg_loss : tensor([7.8290], device='cuda:0'), reg_l1_loss : tensor([3.7879], device='cuda:0'), reg_l2_loss : tensor([11.8701], device='cuda:0'), batch_size : tensor([23], device='cuda:0'), seq_length : tensor([676], device='cuda:0'), out_acc_1 : tensor([0.0444], device='cuda:0'), out_acc_2 : tensor([0.0167], device='cuda:0'), lr : 2.5200000000000003e-05, epoch : 0, step : 250, p : [251/114950|(3 days, 13:51:50.059094)], time/batch : 2.694967341423035s, 
+2024-12-30 15:14:04,118,root,INFO,tr, loss : tensor([14.3188], device='cuda:0'), nll_loss : tensor([6.4548], device='cuda:0'), reg_loss : tensor([7.8640], device='cuda:0'), reg_l1_loss : tensor([3.7962], device='cuda:0'), reg_l2_loss : tensor([11.9317], device='cuda:0'), batch_size : tensor([27], device='cuda:0'), seq_length : tensor([583], device='cuda:0'), out_acc_1 : tensor([0.0350], device='cuda:0'), out_acc_2 : tensor([0.0273], device='cuda:0'), lr : 2.62e-05, epoch : 0, step : 260, p : [261/114950|(3 days, 12:55:27.375864)], time/batch : 2.6657079219818116s, 
+2024-12-30 15:14:31,994,root,INFO,tr, loss : tensor([14.4636], device='cuda:0'), nll_loss : tensor([6.5782], device='cuda:0'), reg_loss : tensor([7.8854], device='cuda:0'), reg_l1_loss : tensor([3.8018], device='cuda:0'), reg_l2_loss : tensor([11.9690], device='cuda:0'), batch_size : tensor([22], device='cuda:0'), seq_length : tensor([719], device='cuda:0'), out_acc_1 : tensor([0.0186], device='cuda:0'), out_acc_2 : tensor([0.0182], device='cuda:0'), lr : 2.72e-05, epoch : 0, step : 270, p : [271/114950|(3 days, 16:47:58.312840)], time/batch : 2.7875924348831176s, 
+2024-12-30 15:14:59,246,root,INFO,tr, loss : tensor([14.1988], device='cuda:0'), nll_loss : tensor([6.4447], device='cuda:0'), reg_loss : tensor([7.7541], device='cuda:0'), reg_l1_loss : tensor([3.7640], device='cuda:0'), reg_l2_loss : tensor([11.7441], device='cuda:0'), batch_size : tensor([23], device='cuda:0'), seq_length : tensor([685], device='cuda:0'), out_acc_1 : tensor([0.0311], device='cuda:0'), out_acc_2 : tensor([0.0235], device='cuda:0'), lr : 2.8199999999999998e-05, epoch : 0, step : 280, p : [281/114950|(3 days, 14:48:14.180088)], time/batch : 2.7251844882965086s, 
+2024-12-30 15:15:26,651,root,INFO,tr, loss : tensor([14.1679], device='cuda:0'), nll_loss : tensor([6.4881], device='cuda:0'), reg_loss : tensor([7.6798], device='cuda:0'), reg_l1_loss : tensor([3.7409], device='cuda:0'), reg_l2_loss : tensor([11.6187], device='cuda:0'), batch_size : tensor([23], device='cuda:0'), seq_length : tensor([683], device='cuda:0'), out_acc_1 : tensor([0.0345], device='cuda:0'), out_acc_2 : tensor([0.0201], device='cuda:0'), lr : 2.92e-05, epoch : 0, step : 290, p : [291/114950|(3 days, 15:17:00.876035)], time/batch : 2.7404815673828127s, 
+2024-12-30 15:15:53,760,root,INFO,tr, loss : tensor([14.1792], device='cuda:0'), nll_loss : tensor([6.5039], device='cuda:0'), reg_loss : tensor([7.6752], device='cuda:0'), reg_l1_loss : tensor([3.7405], device='cuda:0'), reg_l2_loss : tensor([11.6099], device='cuda:0'), batch_size : tensor([23], device='cuda:0'), seq_length : tensor([673], device='cuda:0'), out_acc_1 : tensor([0.0303], device='cuda:0'), out_acc_2 : tensor([0.0144], device='cuda:0'), lr : 3.02e-05, epoch : 0, step : 300, p : [301/114950|(3 days, 14:20:07.733097)], time/batch : 2.710950231552124s, 
+2024-12-30 15:16:19,829,root,INFO,tr, loss : tensor([14.1131], device='cuda:0'), nll_loss : tensor([6.4770], device='cuda:0'), reg_loss : tensor([7.6361], device='cuda:0'), reg_l1_loss : tensor([3.7291], device='cuda:0'), reg_l2_loss : tensor([11.5431], device='cuda:0'), batch_size : tensor([22], device='cuda:0'), seq_length : tensor([713], device='cuda:0'), out_acc_1 : tensor([0.0359], device='cuda:0'), out_acc_2 : tensor([0.0205], device='cuda:0'), lr : 3.12e-05, epoch : 0, step : 310, p : [311/114950|(3 days, 11:00:45.794805)], time/batch : 2.606842303276062s, 
+2024-12-30 15:16:48,337,root,INFO,tr, loss : tensor([14.0948], device='cuda:0'), nll_loss : tensor([6.5072], device='cuda:0'), reg_loss : tensor([7.5877], device='cuda:0'), reg_l1_loss : tensor([3.7129], device='cuda:0'), reg_l2_loss : tensor([11.4624], device='cuda:0'), batch_size : tensor([26], device='cuda:0'), seq_length : tensor([605], device='cuda:0'), out_acc_1 : tensor([0.0277], device='cuda:0'), out_acc_2 : tensor([0.0223], device='cuda:0'), lr : 3.22e-05, epoch : 0, step : 320, p : [321/114950|(3 days, 18:46:30.405544)], time/batch : 2.8508527994155886s, 
+2024-12-30 15:17:14,860,root,INFO,tr, loss : tensor([13.7978], device='cuda:0'), nll_loss : tensor([6.4774], device='cuda:0'), reg_loss : tensor([7.3204], device='cuda:0'), reg_l1_loss : tensor([3.6341], device='cuda:0'), reg_l2_loss : tensor([11.0067], device='cuda:0'), batch_size : tensor([70], device='cuda:0'), seq_length : tensor([223], device='cuda:0'), out_acc_1 : tensor([0.0335], device='cuda:0'), out_acc_2 : tensor([0.0240], device='cuda:0'), lr : 3.32e-05, epoch : 0, step : 330, p : [331/114950|(3 days, 12:17:41.218036)], time/batch : 2.647564697265625s, 
+2024-12-30 15:17:42,937,root,INFO,tr, loss : tensor([13.9756], device='cuda:0'), nll_loss : tensor([6.4459], device='cuda:0'), reg_loss : tensor([7.5297], device='cuda:0'), reg_l1_loss : tensor([3.6943], device='cuda:0'), reg_l2_loss : tensor([11.3651], device='cuda:0'), batch_size : tensor([27], device='cuda:0'), seq_length : tensor([575], device='cuda:0'), out_acc_1 : tensor([0.0338], device='cuda:0'), out_acc_2 : tensor([0.0158], device='cuda:0'), lr : 3.42e-05, epoch : 0, step : 340, p : [341/114950|(3 days, 17:23:05.387427)], time/batch : 2.8076799154281615s, 
+2024-12-30 15:18:11,169,root,INFO,tr, loss : tensor([14.0084], device='cuda:0'), nll_loss : tensor([6.4925], device='cuda:0'), reg_loss : tensor([7.5159], device='cuda:0'), reg_l1_loss : tensor([3.6895], device='cuda:0'), reg_l2_loss : tensor([11.3423], device='cuda:0'), batch_size : tensor([27], device='cuda:0'), seq_length : tensor([579], device='cuda:0'), out_acc_1 : tensor([0.0223], device='cuda:0'), out_acc_2 : tensor([0.0170], device='cuda:0'), lr : 3.52e-05, epoch : 0, step : 350, p : [351/114950|(3 days, 17:52:15.712296)], time/batch : 2.823198390007019s, 
+2024-12-30 15:18:38,478,root,INFO,tr, loss : tensor([13.8633], device='cuda:0'), nll_loss : tensor([6.4278], device='cuda:0'), reg_loss : tensor([7.4355], device='cuda:0'), reg_l1_loss : tensor([3.6705], device='cuda:0'), reg_l2_loss : tensor([11.2005], device='cuda:0'), batch_size : tensor([21], device='cuda:0'), seq_length : tensor([741], device='cuda:0'), out_acc_1 : tensor([0.0400], device='cuda:0'), out_acc_2 : tensor([0.0248], device='cuda:0'), lr : 3.62e-05, epoch : 0, step : 360, p : [361/114950|(3 days, 14:55:37.200864)], time/batch : 2.730953240394592s, 
+2024-12-30 15:19:05,760,root,INFO,tr, loss : tensor([13.9558], device='cuda:0'), nll_loss : tensor([6.5327], device='cuda:0'), reg_loss : tensor([7.4231], device='cuda:0'), reg_l1_loss : tensor([3.6642], device='cuda:0'), reg_l2_loss : tensor([11.1820], device='cuda:0'), batch_size : tensor([29], device='cuda:0'), seq_length : tensor([543], device='cuda:0'), out_acc_1 : tensor([0.0274], device='cuda:0'), out_acc_2 : tensor([0.0176], device='cuda:0'), lr : 3.72e-05, epoch : 0, step : 370, p : [371/114950|(3 days, 14:49:56.179612)], time/batch : 2.728215289115906s, 
+2024-12-30 15:19:31,979,root,INFO,tr, loss : tensor([13.8805], device='cuda:0'), nll_loss : tensor([6.4811], device='cuda:0'), reg_loss : tensor([7.3994], device='cuda:0'), reg_l1_loss : tensor([3.6544], device='cuda:0'), reg_l2_loss : tensor([11.1443], device='cuda:0'), batch_size : tensor([22], device='cuda:0'), seq_length : tensor([705], device='cuda:0'), out_acc_1 : tensor([0.0237], device='cuda:0'), out_acc_2 : tensor([0.0238], device='cuda:0'), lr : 3.82e-05, epoch : 0, step : 380, p : [381/114950|(3 days, 11:26:29.483853)], time/batch : 2.621908926963806s, 
+2024-12-30 15:19:58,841,root,INFO,tr, loss : tensor([13.7500], device='cuda:0'), nll_loss : tensor([6.4622], device='cuda:0'), reg_loss : tensor([7.2879], device='cuda:0'), reg_l1_loss : tensor([3.6230], device='cuda:0'), reg_l2_loss : tensor([10.9528], device='cuda:0'), batch_size : tensor([29], device='cuda:0'), seq_length : tensor([541], device='cuda:0'), out_acc_1 : tensor([0.0314], device='cuda:0'), out_acc_2 : tensor([0.0226], device='cuda:0'), lr : 3.9200000000000004e-05, epoch : 0, step : 390, p : [391/114950|(3 days, 13:07:17.152952)], time/batch : 2.674928665161133s, 
+2024-12-30 15:20:25,768,root,INFO,tr, loss : tensor([13.7029], device='cuda:0'), nll_loss : tensor([6.4538], device='cuda:0'), reg_loss : tensor([7.2491], device='cuda:0'), reg_l1_loss : tensor([3.6134], device='cuda:0'), reg_l2_loss : tensor([10.8848], device='cuda:0'), batch_size : tensor([39], device='cuda:0'), seq_length : tensor([403], device='cuda:0'), out_acc_1 : tensor([0.0366], device='cuda:0'), out_acc_2 : tensor([0.0197], device='cuda:0'), lr : 4.02e-05, epoch : 0, step : 400, p : [401/114950|(3 days, 13:30:34.834949)], time/batch : 2.687363791465759s, 
+2024-12-30 15:20:52,785,root,INFO,tr, loss : tensor([13.7188], device='cuda:0'), nll_loss : tensor([6.4162], device='cuda:0'), reg_loss : tensor([7.3025], device='cuda:0'), reg_l1_loss : tensor([3.6239], device='cuda:0'), reg_l2_loss : tensor([10.9812], device='cuda:0'), batch_size : tensor([23], device='cuda:0'), seq_length : tensor([685], device='cuda:0'), out_acc_1 : tensor([0.0352], device='cuda:0'), out_acc_2 : tensor([0.0186], device='cuda:0'), lr : 4.12e-05, epoch : 0, step : 410, p : [411/114950|(3 days, 14:29:02.325682)], time/batch : 2.718221092224121s, 
