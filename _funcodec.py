@@ -5,6 +5,9 @@ from funcodec.tasks.text2audio_generation import Text2AudioGenTask
 from funcodec.iterators.sequence_iter_factory import SequenceIterFactory
 
 
+
+
+
 def init_sequence_iter_factory(args, rank, mode) -> SequenceIterFactory:
     distributed_option = DistributedOption()
     distributed_option.distributed = True
