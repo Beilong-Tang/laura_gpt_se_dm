@@ -8,7 +8,9 @@ from funcodec.bin.codec_inference import Speech2Token
 
 
 class SpeechEnhancement:
-    def __init__(self, args: Namespace, model_ckpt: str, device, logger):
+    def __init__(
+        self, args: Namespace, model_ckpt: str, device, logger, sampling=25, beam_size=1
+    ):
         # Load Laura GPT Model #
         model: nn.Module = Text2AudioGenTask.build_model(args)
         model.to(device)
@@ -43,7 +45,9 @@ class SpeechEnhancement:
             model_tag=None,
             **codec_kwargs,
         )
-    
+        self.sampling = sampling
+        self.beam_size = beam_size
+
     @torch.no_grad()
     def __call__(self, text: torch.Tensor):
         """
@@ -80,4 +84,7 @@ class SpeechEnhancement:
             gen_only_lm=gen_speech_only_lm,
         )
 
-        return ret_val, decoded_codec  # {'gen':[1,1,T], 'gen_only_lm':[1,1,T]}, [1,T,n_q]
+        return (
+            ret_val,
+            decoded_codec,
+        )  # {'gen':[1,1,T], 'gen_only_lm':[1,1,T]}, [1,T,n_q]
