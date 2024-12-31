@@ -152,9 +152,9 @@ from utils.mel_spectrogram import MelSpec
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    ## Codec
-    parser.add_argument("--codec_config_file", type=str, default = None)
-    parser.add_argument("--codec_model_file", type=str, default = None)
+    ## laura gpt related
+    parser.add_argument("--sampling", default = 25, type = int)
+    parser.add_argument("--beam_size", default = 1, type = int)
 
     parser.add_argument("--scp", type=str)
     parser.add_argument("--config", type=str)
