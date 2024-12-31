@@ -200,7 +200,7 @@ def inference(rank, args):
         for audio_path in pbar:
             # 0. Load audio & Extract Mel
             audio, sr = torchaudio.load(audio_path)  # [1,T]
-            mask = torch.tensor([audio.size(1)], type=torch.long)
+            mask = torch.tensor([audio.size(1)], dtype=torch.long)
             mel, _ = mel_spec.mel(audio, mask)
             mel = mel.to(device)
 
