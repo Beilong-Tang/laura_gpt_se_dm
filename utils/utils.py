@@ -101,6 +101,8 @@ class AttrDict(Namespace):
             return super().__getattribute__(name)
         except AttributeError:
             return None
+    def __getitem__(self,key):
+        return self.__getattribute__(key)
 
 def get_source_list(file_path: str, ret_name=False):
     files = []
