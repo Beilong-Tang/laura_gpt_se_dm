@@ -150,7 +150,7 @@ def main(args: argparse.Namespace):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config_file", type=str)
-    parser.add_argument("--default_config", type=str)
+    parser.add_argument("--default_config", type=str, default="inference/_default.yaml")
     parser.add_argument("--model_file", type=str)
     parser.add_argument("--output_dir", type=str)
     parser.add_argument("--raw_inputs", nargs="*", default=None, type=str)
