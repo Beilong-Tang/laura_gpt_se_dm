@@ -53,7 +53,7 @@ class SpeechEnhancement:
         continual_length = 0  # Continual is not needed here
 
         # 1. Encode Text(Mel)
-        text_lens = torch.tensor(text.size(1), dtype=torch.long, device=text.device)
+        text_lens = torch.tensor([text.size(1)], dtype=torch.long, device=text.device)
         text_outs, text_out_lens = self.model.encode(text, text_lens)
         # 2. decode first codec group
         decoded_codec = self.model.decode_codec(
