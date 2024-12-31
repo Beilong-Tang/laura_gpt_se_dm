@@ -43,4 +43,4 @@ model_ckpt="$(dirname "$config_path")/$(basename "$config_path" .yaml)/best.pth"
 #######
 # Run #
 #######
-python infer.py --scp $scp --config $config_path --model_ckpt $model_ckpt --num_proc $num_proc --gpus $gpus
+python infer.py --scp $scp --config $config_path --model_ckpt $model_ckpt --output_dir $output_dir --num_proc $num_proc --gpus $gpus
