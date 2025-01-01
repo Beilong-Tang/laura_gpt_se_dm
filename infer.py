@@ -192,7 +192,7 @@ def inference(rank, args):
     # load model
     sp_en = SpeechEnhancement(args, args.model_ckpt, device, logger)
     # mel spec
-    mel_spec = MelSpec()
+    mel_spec = MelSpec(normalization=args.norm_noisy)
 
     # Inference
     total_rtf = 0.0

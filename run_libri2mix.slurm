@@ -27,7 +27,7 @@ module load compiler/rocm/dtk-23.10
 # Setting #
 ###########
 
-# 1. libri2mix without norm (Need to delete soon)
+# 1. libri2mix without norm
 name="libri2mix"
 config_path=exp/$name/config.yaml
 resume=""
