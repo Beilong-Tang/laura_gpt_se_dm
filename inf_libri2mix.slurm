@@ -86,6 +86,4 @@ if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
   ## TODO: Change WER TO Large After downloading
   python eval/wer.py -t "$output_dir"/wavs -r $wer_reference \ 
     -o $"output"/transcript.txt -m $wer_model
-  
-
 fi
