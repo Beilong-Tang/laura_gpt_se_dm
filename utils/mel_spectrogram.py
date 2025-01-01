@@ -1,6 +1,7 @@
 import torch
 import librosa
 import numpy as np
+from utils.hinter import hint_once
 from funcodec.modules.nets_utils import pad_list
 
 def rms_normalize(audio):
@@ -40,6 +41,7 @@ class MelSpec:
             m = m.item()
             a = a[:m].cpu().numpy()
             if self.normalization:
+                hint_once("normalization applied", "normalization", 0)
                 a = rms_normalize(a)
             mel = np.transpose(
                 librosa.feature.melspectrogram(
