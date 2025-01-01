@@ -3,7 +3,7 @@
 #SBATCH -N 1
 #SBATCH -o log_infer.out
 #SBATCH -e log_infer.err
-#SBATCH -p kshdnormal01
+#SBATCH -p kshdnormal
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks-per-node=4
 #SBATCH --gres=dcu:4
