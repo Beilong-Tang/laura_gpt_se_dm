@@ -70,12 +70,12 @@ fi
 if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
   echo "[Evaluation]"
   # DNSMOS
-  echo "[DNSMOS 16k]"
-  python eval/dnsmos.py --model_dir $dns_model_dir -t "$output_dir/wavs" -o "$output_dir/dnsmos.csv"
+  # echo "[DNSMOS 16k]"
+  # python eval/dnsmos.py --model_dir $dns_model_dir -t "$output_dir/wavs" -o "$output_dir/dnsmos.csv"
 
   # SPK SIM
   echo "[SPKSIM WeSpeaker]"
-  python eval/wespeaker.py -t "$output_dir/wavs" \
+  python eval/wespeaker_eval.py -t "$output_dir/wavs" \
     -r $libri2mix_clean_dir -o "$output_dir/wespeaker.csv" 
 fi
 
