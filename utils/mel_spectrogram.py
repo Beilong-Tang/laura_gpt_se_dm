@@ -4,9 +4,21 @@ import numpy as np
 from utils.hinter import hint_once
 from funcodec.modules.nets_utils import pad_list
 
-def rms_normalize(audio):
-    rms = np.sqrt(np.mean(np.square(audio)))  # Calculate the RMS value
-    normalized_audio = audio / rms  # Normalize audio to unit RMS
+def rms_normalize(audio, target_rms=0.1):
+    # Calculate current RMS
+    rms = np.sqrt(np.mean(audio**2))
+    
+    # Calculate scaling factor
+    scaling_factor = target_rms / (rms + 1e-8)  # Add epsilon to avoid division by zero
+    
+    # Apply scaling
+    normalized_audio = audio * scaling_factor
+    
+    # Ensure no clipping
+    peak = np.max(np.abs(normalized_audio))
+    if peak > 1.0:
+        normalized_audio /= peak  # Scale down to avoid clipping
+    
     return normalized_audio
 
 class MelSpec:
@@ -15,7 +27,7 @@ class MelSpec:
         fs=16000,
         n_fft=2048,
         hop_size=640,
-        normalization = True,
+        normalization = False,
     ):
         """
         normalization: Whether to normalize audio using rms
