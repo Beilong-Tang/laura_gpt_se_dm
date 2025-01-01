@@ -110,7 +110,7 @@ def wer(args):
             total_wer += wer
     info = f"total wer {total_wer}, missing audio is {bad_audio}"
     print(info)
-    with open(args.output+".wer.txt", "w") as f:
+    with open(args.output+"/.wer.txt", "w") as f:
         print(info, file = f)
 if __name__ == "__main__":
     main()

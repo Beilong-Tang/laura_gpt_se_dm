@@ -27,7 +27,7 @@ module load compiler/rocm/dtk-23.10
 # Setting #
 ###########
 stage=1
-stop_stage=1 # 0: infer, 1: eval
+stop_stage=2 # 0: infer, 1: DNSMOS + SPKSIM 2: WER 
 
 # 0. libri2mix mixture without norm
 name="libri2mix"
@@ -44,6 +44,7 @@ gpus="cuda:0 cuda:1 cuda:2 cuda:3"
 ########
 dns_model_dir="/public/home/qinxy/bltang/ml_framework_slurm/recipes/DNSMOS"
 wer_model="base"
+wer_reference="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/whisper/whisper_base.txt"
 
 
 ###############
@@ -81,8 +82,10 @@ fi
 
 if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
   ## WER 
+  echo "[WER $wer_model]"
   ## TODO: Change WER TO Large After downloading
-  # python eval/wer.py -t "$output_dir"/wavs 
+  python eval/wer.py -t "$output_dir"/wavs -r $wer_reference \ 
+    -o $"output"/transcript.txt -m $wer_model
   
 
 fi
