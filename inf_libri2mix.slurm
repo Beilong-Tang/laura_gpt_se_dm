@@ -70,7 +70,6 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
 echo "[Evaluation]"
 # DNSMOS
 echo "[DNSMOS 16k]"
-dns_output_path=
 python eval/dnsmos.py --model_dir $dns_model_dir -t "$output_dir/wavs" -o "$output_dir/dnsmos.csv"
 
 # SPK SIM
