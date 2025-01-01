@@ -144,8 +144,8 @@ class ComputeScore:
                 else:
                     rows.append(data)
         df = pd.DataFrame(rows)
-        df.to_csv(output_csv)
         print(df.describe())
+        df.to_csv(output_csv)
 
 
 def main(args):
