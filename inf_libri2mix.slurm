@@ -33,6 +33,7 @@ stop_stage=1 # 0: infer, 1: eval
 name="libri2mix"
 config_name="config.yaml"
 scp="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/list/test/mix.scp"
+libri2mix_clean_dir="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/test/s1" # for wespeaker only
 
 # DDP #
 num_proc=8
@@ -72,12 +73,13 @@ echo "[DNSMOS 16k]"
 dns_output_path=
 python eval/dnsmos.py --model_dir $dns_model_dir -t "$output_dir/wavs" -o "$output_dir/dnsmos.csv"
 
-# WER
+# SPK SIM
+echo "[SPKSIM WeSpeaker]"
+python eval/wespeaker.py -t "$output_dir/wavs" \
+  -r $libri2mix_clean_dir -o "$output_dir/wespeaker.csv" 
 
-
-
-
-
+# # WER
+# python eval/wer.py -t "$output_dir/wavs" -r 
 
 
 fi
