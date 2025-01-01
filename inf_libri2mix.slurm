@@ -37,7 +37,7 @@ gpus="cuda:0 cuda:1 cuda:2 cuda:3"
 # DONT CHANGE #
 ###############
 config_path=exp/$name/$config_name
-output_dir="output/$name/$(basename $config_name .yaml)"
+output_dir="output/$name/$(basename $config_name .yaml)/wavs"
 model_ckpt="$(dirname "$config_path")/$(basename "$config_path" .yaml)/ckpt/best.pth"
 
 #######
