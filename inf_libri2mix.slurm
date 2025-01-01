@@ -43,6 +43,7 @@ gpus="cuda:0 cuda:1 cuda:2 cuda:3"
 # Eval #
 ########
 dns_model_dir="/public/home/qinxy/bltang/ml_framework_slurm/recipes/DNSMOS"
+wer_model="base"
 
 
 ###############
@@ -67,18 +68,21 @@ fi
 ########
 
 if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
-echo "[Evaluation]"
-# DNSMOS
-echo "[DNSMOS 16k]"
-python eval/dnsmos.py --model_dir $dns_model_dir -t "$output_dir/wavs" -o "$output_dir/dnsmos.csv"
+  echo "[Evaluation]"
+  # DNSMOS
+  echo "[DNSMOS 16k]"
+  python eval/dnsmos.py --model_dir $dns_model_dir -t "$output_dir/wavs" -o "$output_dir/dnsmos.csv"
 
-# SPK SIM
-echo "[SPKSIM WeSpeaker]"
-python eval/wespeaker.py -t "$output_dir/wavs" \
-  -r $libri2mix_clean_dir -o "$output_dir/wespeaker.csv" 
+  # SPK SIM
+  echo "[SPKSIM WeSpeaker]"
+  python eval/wespeaker.py -t "$output_dir/wavs" \
+    -r $libri2mix_clean_dir -o "$output_dir/wespeaker.csv" 
+fi
 
-# # WER
-# python eval/wer.py -t "$output_dir/wavs" -r 
-
+if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
+  ## WER 
+  ## TODO: Change WER TO Large After downloading
+  # python eval/wer.py -t "$output_dir"/wavs 
+  
 
 fi

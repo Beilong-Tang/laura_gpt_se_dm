@@ -56,21 +56,22 @@ def main():
         print("running wer calculation")
         wer(args)
 
+def _transcribe_single_process(rank, args) -> str:
+    device = args.gpus[rank % args.num_proc]
+    model = whisper.load_model(args.model)
+    model.to(device)
+    audio_path_list = sorted(glob.glob(op.join(args.test_file, "*.wav")))
+    audio_path_list = audio_path_list[rank :: args.num_proc]
+    res = []
+    output_file = f"{args.output}.temp_{rank}.txt"
+    for audio in tqdm.tqdm(audio_path_list, desc=f"[rank {rank}]"):
+        result = model.transcribe(audio)
+        res.append(f"{os.path.basename(audio)}|{result['text']}\n")
+    with open(output_file, "w") as f:
+        f.writelines(res)
+    return output_file
+
 def transcribe(args):
-    def _transcribe_single_process(rank, args) -> str:
-        device = args.gpus[rank % args.num_proc]
-        model = whisper.load_model(args.model)
-        model.to(device)
-        audio_path_list = sorted(glob.glob(op.join(args.test_file, "*.wav")))
-        audio_path_list = audio_path_list[rank :: args.num_proc]
-        res = []
-        output_file = f"{args.output}.temp_{rank}.txt"
-        for audio in tqdm.tqdm(audio_path_list, desc=f"[rank {rank}]"):
-            result = model.transcribe(audio)
-            res.append(f"{os.path.basename(audio)}|{result['text']}\n")
-        with open(output_file, "w") as f:
-            f.writelines(res)
-        return output_file
 
     inputs = []
     for i in range(0, args.num_proc):
