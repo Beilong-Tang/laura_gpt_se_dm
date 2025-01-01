@@ -64,7 +64,7 @@ def _transcribe_single_process(rank, args) -> str:
     audio_path_list = audio_path_list[rank :: args.num_proc]
     res = []
     output_file = f"{args.output}.temp_{rank}.txt"
-    for audio in tqdm.tqdm(audio_path_list, desc=f"[rank {rank}]"):
+    for audio in tqdm.tqdm(audio_path_list, desc=f"[rank {rank}/{args.num_proc}]"):
         result = model.transcribe(audio)
         res.append(f"{os.path.basename(audio)}|{result['text']}\n")
     with open(output_file, "w") as f:
