@@ -6,14 +6,14 @@ import argparse
 import concurrent.futures
 import glob
 import os
+import sys 
+sys.path.append(os.getcwd())
 
 import librosa
 import numpy as np
-import numpy.polynomial.polynomial as poly
 import onnxruntime as ort
 import pandas as pd
 import soundfile as sf
-from requests import session
 from tqdm import tqdm
 
 SAMPLING_RATE = 16000

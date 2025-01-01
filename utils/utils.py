@@ -1,6 +1,7 @@
 import datetime
 import os
 import logging
+from typing import List
 import yaml
 import random
 import numpy as np
@@ -34,7 +35,6 @@ def setup_logger(log_dir: str, rank: int, out=True):
     logger = logging.getLogger()
     logger.info("logger initialized")
     return Logger(logger, rank)
-
 
 
 def update_args(args: Namespace, config_file_path: str):
@@ -83,7 +83,8 @@ def setup_seed(seed, rank):
     torch.backends.cudnn.benchmark = False
     return SEED
 
-def get_env(config_path:str):
+
+def get_env(config_path: str):
     """
     config_path: str to yaml config
     """
@@ -91,6 +92,7 @@ def get_env(config_path:str):
         config = yaml.safe_load(f)
     config = AttrDict(**config)
     return config
+
 
 class AttrDict(Namespace):
     def __init__(self, **kwargs):
@@ -101,8 +103,10 @@ class AttrDict(Namespace):
             return super().__getattribute__(name)
         except AttributeError:
             return None
-    def __getitem__(self,key):
+
+    def __getitem__(self, key):
         return self.__getattribute__(key)
+
 
 def get_source_list(file_path: str, ret_name=False):
     files = []
@@ -119,3 +123,20 @@ def get_source_list(file_path: str, ret_name=False):
     return files
 
 
+def merge_content(files: List[str], save_path: str):
+    """
+    Merge contents from each file in files to save_path
+    It drops empty lines.
+    """
+    def _get(files)-> List[str]:
+        res = []
+        for p in files:
+            with open(p, "r") as f:
+                for line in f.readlines():
+                    if line.strip() == "":
+                        continue 
+                    res.append(line)
+        return res
+    res = _get(files)
+    with open(save_path, "w") as f:
+        f.writelines(res)

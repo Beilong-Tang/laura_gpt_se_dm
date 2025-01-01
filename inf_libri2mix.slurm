@@ -26,21 +26,58 @@ module load compiler/rocm/dtk-23.10
 ###########
 # Setting #
 ###########
+stage=1
+stop_stage=1 # 0: infer, 1: eval
+
+# 0. libri2mix mixture without norm
 name="libri2mix"
 config_name="config.yaml"
 scp="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/list/test/mix.scp"
+
 # DDP #
 num_proc=8
 gpus="cuda:0 cuda:1 cuda:2 cuda:3"
+
+########
+# Eval #
+########
+dns_model_dir="/public/home/qinxy/bltang/ml_framework_slurm/recipes/DNSMOS"
+
 
 ###############
 # DONT CHANGE #
 ###############
 config_path=exp/$name/$config_name
-output_dir="output/$name/$(basename $config_name .yaml)/wavs"
+output_dir="output/$name/$(basename $config_name .yaml)"
 model_ckpt="$(dirname "$config_path")/$(basename "$config_path" .yaml)/ckpt/best.pth"
 
 #######
 # Run #
 #######
-python infer.py --scp $scp --config $config_path --model_ckpt $model_ckpt --output_dir $output_dir --num_proc $num_proc --gpus $gpus
+
+if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
+echo "[Inference]"
+python infer.py --scp $scp --config $config_path --model_ckpt $model_ckpt --output_dir "$output_dir/wavs" --num_proc $num_proc --gpus $gpus
+fi
+
+
+########
+# Eval #
+########
+
+if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
+echo "[Evaluation]"
+# DNSMOS
+echo "[DNSMOS 16k]"
+dns_output_path=
+python eval/dnsmos.py --model_dir $dns_model_dir -t "$output_dir/wavs" -o "$output_dir/dnsmos.csv"
+
+# WER
+
+
+
+
+
+
+
+fi

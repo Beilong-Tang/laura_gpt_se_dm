@@ -8,28 +8,17 @@ import os.path as op
 import glob
 import tqdm
 import os
-import sys 
+import sys
+import jiwer
+
 sys.path.append(os.getcwd())
-import torch
-import torch.multiprocessing as mp
+
+import multiprocessing as mp
+
+from utils.utils import merge_content
 
 
-def main(args, device, rank, world_size):
-    torch.cuda.set_device(device)
-    model = whisper.load_model(args.model)
-    model.cuda()
-    audio_path_list = sorted(glob.glob(op.join(args.test_file, "*.wav")))
-    audio_path_list = audio_path_list[rank::world_size]
-    print("total audio len: ", len(audio_path_list))
-    os.makedirs(op.dirname(args.output), exist_ok=True)
-    res = []
-    for audio in tqdm.tqdm(audio_path_list):
-        result = model.transcribe(audio)
-        res.append(f"{os.path.basename(audio)}|{result['text']}\n")
-    with open(f"{args.output}.temp_{rank}.txt", "w") as f:
-        f.writelines(res)
-
-if __name__ == "__main__":
+def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-t",
@@ -37,31 +26,89 @@ if __name__ == "__main__":
         help="The path of audio files ending with .wav to be transcripted",
     )
     parser.add_argument(
+        "-r",
+        "--reference",
+        type=str,
+        default=None,
+        help="If None, just run the whisper inference. The path to the output transcript, the content should be name|sentence\n name2|sentence ",
+    )
+    parser.add_argument(
         "-o", "--output", help="The output file containing the transcript"
     )
     parser.add_argument(
-        "-m", "--model", help="The model to use, default: base", default="base"
+        "-m", "--model", help="The model to use, default: large", default="large"
     )
+    # DDP #
     parser.add_argument(
         "--gpus", nargs="+", default=["cuda:0", "cuda:1", "cuda:2", "cuda:3"]
     )
     parser.add_argument("--num_proc", type=int, default=8)
     args = parser.parse_args()
-    
-    processes = []
-    for i in range(0,args.num_proc):
-        device = args.gpus[i % len(args.gpus)]
-        process = mp.Process(target=main, args=(args, device, i, args.num_proc))
-        process.start()
-        processes.append(process)
-    for p in processes:
-        p.join()
-    results = []
-    for path in glob.glob(f"{args.output}.temp*.txt"):
+    return args
+
+
+def main():
+    args = parse_args()
+    print(f"wer args: {args}")
+    os.makedirs(op.dirname(args.output), exist_ok=True)
+    transcribe(args)
+    if args.reference is not None:
+        print("running wer calculation")
+        wer(args)
+
+def transcribe(args):
+    def _transcribe_single_process(rank, args) -> str:
+        device = args.gpus[rank % args.num_proc]
+        model = whisper.load_model(args.model)
+        model.to(device)
+        audio_path_list = sorted(glob.glob(op.join(args.test_file, "*.wav")))
+        audio_path_list = audio_path_list[rank :: args.num_proc]
+        res = []
+        output_file = f"{args.output}.temp_{rank}.txt"
+        for audio in tqdm.tqdm(audio_path_list, desc=f"[rank {rank}]"):
+            result = model.transcribe(audio)
+            res.append(f"{os.path.basename(audio)}|{result['text']}\n")
+        with open(output_file, "w") as f:
+            f.writelines(res)
+        return output_file
+
+    inputs = []
+    for i in range(0, args.num_proc):
+        inputs.append((i, args))
+    with mp.Pool(processes=args.num_proc) as pool:
+        results = pool.starmap(_transcribe_single_process, inputs)
+    print(f"results {results}")
+    merge_content(results, args.output)
+
+def wer(args):
+    def _get_result(path, separator="|"):
+        """
+        Args:
+            path: transcript txt path
+            separator: the separator for each line to separate name and text value
+        Returns:
+            dict where key is name and value is the transcript
+        """
+        res_dict = {}
         with open(path, "r") as f:
             for line in f.readlines():
-                results.append(line)
-        os.remove(path)
-    with open(args.output,"w") as file:
-        file.writelines(results)
-
+                name, text = line.replace("\n", "").split(separator)
+                res_dict[name] = text
+        return res_dict
+    output_dict = _get_result(args.output)
+    ref_dict = _get_result(args.reference)
+    total_wer = 0.0
+    bad_audio=[]
+    for key, value in tqdm.tqdm(ref_dict.items()):
+        if output_dict.get(key) is None:
+            bad_audio.append(key)
+        else:
+            value_hat = output_dict.get(key)
+            wer = jiwer.wer(value, value_hat)
+            total_wer += wer
+    info = f"total wer {total_wer}, missing audio is {bad_audio}"
+    print(info)
+    with open(args.output+".wer.txt", "w") as f:
+        print(info, file = f)
+if __name__ == "__main__":
+    main()
