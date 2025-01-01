@@ -75,15 +75,15 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
   # python eval/dnsmos.py --model_dir $dns_model_dir -t "$output_dir/wavs" -o "$output_dir/dnsmos.csv"
 
   # SPK SIM
-  echo "[SPKSIM WeSpeaker]"
-  python eval/wespeaker_eval.py -t "$output_dir/wavs" \
-    -r $libri2mix_clean_dir -o "$output_dir/wespeaker.csv" 
+  # echo "[SPKSIM WeSpeaker]"
+  # python eval/wespeaker_eval.py -t "$output_dir/wavs" \
+  #   -r $libri2mix_clean_dir -o "$output_dir/wespeaker.csv" 
 fi
 
 if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
   ## WER 
   echo "[WER $wer_model]"
   ## TODO: Change WER TO Large After downloading
-  python eval/wer.py -t "$output_dir"/wavs -r $wer_reference \ 
+  python eval/wer.py -t "$output_dir"/wavs -r $wer_reference \
     -o $"output"/transcript.txt -m $wer_model
 fi
