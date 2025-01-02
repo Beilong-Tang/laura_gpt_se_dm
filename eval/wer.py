@@ -11,6 +11,7 @@ import os
 import sys
 import jiwer
 import torch.multiprocessing as mp
+from pathlib import Path
 
 sys.path.append(os.getcwd())
 
@@ -108,9 +109,9 @@ def wer(args):
             value_hat = output_dict.get(key)
             wer = jiwer.wer(value, value_hat)
             total_wer += wer
-    info = f"total wer {total_wer}, missing audio is {bad_audio}"
-    print(info)
-    with open(args.output+"/.wer.txt", "w") as f:
+    avg_wer = total_wer / len(ref_dict)
+    info = f"average wer: {avg_wer}, missing audio is {bad_audio}"
+    with open(Path(args.output).parent / "wer.txt", "w") as f:
         print(info, file = f)
 if __name__ == "__main__":
     main()
