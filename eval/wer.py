@@ -113,6 +113,7 @@ def wer(args):
             total_wer += wer
     avg_wer = total_wer / len(ref_dict)
     info = f"average wer: {avg_wer}, missing audio is {bad_audio}"
+    print(info)
     with open(Path(args.output).parent / "wer.txt", "w") as f:
         print(info, file = f)
 if __name__ == "__main__":
