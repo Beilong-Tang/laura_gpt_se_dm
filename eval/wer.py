@@ -11,6 +11,7 @@ import os
 import sys
 import jiwer
 import torch.multiprocessing as mp
+import torch
 from pathlib import Path
 
 sys.path.append(os.getcwd())
@@ -60,7 +61,8 @@ def main():
 
 def _transcribe_single_process(rank, args) -> str:
     device = args.gpus[rank % len(args.gpus)]
-    model = whisper.load_model(args.model)
+    torch.cuda.set_device(device)
+    model = whisper.load_model(args.model, device=device)
     model.to(device)
     audio_path_list = sorted(glob.glob(op.join(args.test_file, "*.wav")))
     audio_path_list = audio_path_list[rank :: args.num_proc]
