@@ -44,7 +44,8 @@ gpus="cuda:0 cuda:1 cuda:2 cuda:3"
 ########
 dns_model_dir="/public/home/qinxy/bltang/ml_framework_slurm/recipes/DNSMOS"
 wer_model="large"
-wer_reference="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/whisper/whisper_base.txt"
+wer_reference="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/whisper/whisper_$wer_model.txt"
+wer_num_proc=4
 
 
 ###############
@@ -85,5 +86,5 @@ if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
   echo "[WER $wer_model]"
   ## TODO: Change WER TO Large After downloading
   python eval/wer.py -t "$output_dir"/wavs -r $wer_reference \
-    -o $"output"/transcript.txt -m $wer_model --num_proc 4
+    -o $"output"/transcript.txt -m $wer_model --num_proc $wer_num_proc
 fi
