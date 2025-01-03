@@ -164,7 +164,8 @@ class Trainer:
             save(
                 path,
                 content,
-                self.max_ckpt,
+                epoch,
+                self.max_ckpt
             )
             if save_best:
                 self._log(f"saving the best model of epoch {epoch}")

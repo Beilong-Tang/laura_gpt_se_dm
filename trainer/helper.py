@@ -10,7 +10,7 @@ def dict_to_str(dictionary):
     for key, value in dictionary.items():
         if isinstance(value, torch.Tensor):
             value = value.item()
-        
+
         if isinstance(value, float):
             res += f"{key} : {value:.3f} | "
         else:
@@ -39,7 +39,7 @@ def normalize_result(result: dict, length: int):
     return result
 
 
-def save(path, content, max_ckpt=1):
+def save(path, content, epoch, max_ckpt=1):
     # if len(files_path) >= max_ckpt:
     if max_ckpt == -1:
         ##save
@@ -49,9 +49,10 @@ def save(path, content, max_ckpt=1):
         max_ckpt = 1
     dirname = op.dirname(path)
     files = sorted(
-        [f for f in os.listdir(dirname) if (f.endswith(".pth") and "best" not in f)],
+        [f for f in files if (f.endswith(".pth") and "best" not in f)],
         key=lambda x: int(re.search(r"[0-9]+", x).group()),
     )
+    files = list(filter(lambda x: int(re.search(r"[0-9]+", x).group()) < epoch, files))
     files_path = [op.join(dirname, f) for f in files]
     if len(files_path) >= max_ckpt:
         try:
