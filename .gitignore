@@ -6,5 +6,5 @@ __pycache__/
 *.pt
 ckpt/
 data/*
-log
+*.log
 output/*

@@ -27,14 +27,8 @@ module load compiler/rocm/dtk-23.10
 # Setting #
 ###########
 
-# 1. libri2mix without norm
 name="libri2mix"
 config_path=exp/$name/config.yaml
-resume=""
-
-# 2. libri2mix norm when training
-name="libri2mix"
-config_path=exp/$name/config_norm.yaml
 resume=""
 
 ###############
