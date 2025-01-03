@@ -6,6 +6,7 @@ import torch
 import torch.multiprocessing as mp
 import tqdm
 import time
+import numpy as np
 from pathlib import Path
 
 import torchaudio
@@ -13,14 +14,14 @@ import soundfile as sf
 from utils.utils import AttrDict, update_args, setup_seed
 from bin.se_inference import SpeechEnhancement
 from utils.utils import get_source_list
-from utils.mel_spectrogram import MelSpec, rms_normalize
+from utils.mel_spectrogram import MelSpec
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
     ## laura gpt related
-    parser.add_argument("--sampling", default = 25, type = int)
-    parser.add_argument("--beam_size", default = 1, type = int)
+    parser.add_argument("--sampling", default=25, type=int)
+    parser.add_argument("--beam_size", default=1, type=int)
 
     parser.add_argument("--scp", type=str)
     parser.add_argument("--config", type=str)
@@ -81,10 +82,20 @@ def inference(rank, args):
             # 2. Save audio
             base_name = Path(audio_path).stem + ".wav"
             save_path = args.output_dir / base_name
-            
-        
-            sf.write(save_path, rms_normalize(output.cpu().numpy()), samplerate=sr)
-    logger.info(f"Finished generation of {len(scp)} utterances (RTF = {total_rtf / len(scp):.03f}).")
+
+            sf.write(
+                save_path,
+                normalize(output.cpu().numpy(), audio.numpy().squeeze()),
+                samplerate=sr,
+            )
+    logger.info(
+        f"Finished generation of {len(scp)} utterances (RTF = {total_rtf / len(scp):.03f})."
+    )
+
+
+def normalize(output: np.ndarray, mixture: np.ndarray):
+    norm = np.linalg.norm(mixture, np.inf)
+    return output * norm / np.max(np.abs(output))
 
 
 if __name__ == "__main__":
