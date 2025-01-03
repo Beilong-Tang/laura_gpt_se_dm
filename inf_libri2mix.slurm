@@ -26,7 +26,7 @@ module load compiler/rocm/dtk-23.10
 ###########
 # Setting #
 ###########
-stage=1
+stage=0
 stop_stage=2 # 0: infer, 1: DNSMOS + SPKSIM 2: WER 
 
 # 0. libri2mix mixture without norm
@@ -43,10 +43,11 @@ gpus="cuda:0 cuda:1 cuda:2 cuda:3"
 # Eval #
 ########
 dns_model_dir="/public/home/qinxy/bltang/ml_framework_slurm/recipes/DNSMOS"
-wer_model="large"
-wer_reference="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/whisper/whisper_$wer_model.txt"
-wer_num_proc=4
+wer_model="base"
+wer_num_proc=8
 
+# DONT CHANGE #
+wer_reference="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/whisper/whisper_$wer_model.txt"
 
 ###############
 # DONT CHANGE #
@@ -69,22 +70,23 @@ fi
 # Eval #
 ########
 
+
 if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
   echo "[Evaluation]"
   # DNSMOS
-  # echo "[DNSMOS 16k]"
-  # python eval/dnsmos.py --model_dir $dns_model_dir -t "$output_dir/wavs" -o "$output_dir/dnsmos.csv"
+  echo "[DNSMOS 16k]"
+  python eval/dnsmos.py --model_dir $dns_model_dir -t "$output_dir/wavs" -o "$output_dir/dnsmos.csv"
 
   # SPK SIM
-  # echo "[SPKSIM WeSpeaker]"
-  # python eval/wespeaker_eval.py -t "$output_dir/wavs" \
-  #   -r $libri2mix_clean_dir -o "$output_dir/wespeaker.csv" 
+  echo "[SPKSIM WeSpeaker]"
+  python eval/wespeaker_eval.py -t "$output_dir/wavs" \
+    -r $libri2mix_clean_dir -o "$output_dir/wespeaker.csv" 
 fi
 
 if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
   ## WER 
   echo "[WER $wer_model]"
   ## TODO: Change WER TO Large After downloading
-  python eval/wer.py -t "$output_dir"/wavs -r $wer_reference \
-    -o "$output"/transcript_"$wer_model.txt -m $wer_model --num_proc $wer_num_proc
-fi
+  python eval/wer.py -t "$output_dir"/wavs -r $wer_reference \ 
+    -o "$output"/transcript_"$wer_model".txt -m $wer_model --num_proc $wer_num_proc
+fi 
