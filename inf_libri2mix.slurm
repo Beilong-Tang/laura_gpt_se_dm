@@ -92,6 +92,6 @@ if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
   ## WER 
   echo "[WER $wer_model]"
   ## TODO: Change WER TO Large After downloading
-  python eval/wer.py -t "$output_dir"/wavs -r $wer_reference \ 
+  python eval/wer.py -t "$output_dir"/wavs -r $wer_reference \
     -o "$output"/transcript_"$wer_model".txt -m $wer_model --num_proc $wer_num_proc
 fi 
