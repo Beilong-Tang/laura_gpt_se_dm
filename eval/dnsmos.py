@@ -6,6 +6,7 @@ import argparse
 import concurrent.futures
 import glob
 import os
+from pathlib import Path
 import sys 
 sys.path.append(os.getcwd())
 
@@ -144,7 +145,15 @@ class ComputeScore:
                 else:
                     rows.append(data)
         df = pd.DataFrame(rows)
-        print(df.describe())
+        
+        ## Print avg SIG BAK DNSMOS info first 
+        sig_avg = df['SIG'].mean()
+        bak_avg = df['BAK'].mean()
+        ovrl_avg= df['OVRL'].mean()
+        info = f"SIG:{sig_avg}|BAK:{bak_avg}|OVRL:{ovrl_avg}"
+        print(info)
+        with open(str(Path(output_csv).parent / "dnsmos.log"), "w") as f:
+            print(info, file= f)
         df.to_csv(output_csv)
 
 
