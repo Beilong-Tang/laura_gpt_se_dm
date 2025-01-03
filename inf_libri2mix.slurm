@@ -9,9 +9,8 @@
 #SBATCH --gres=dcu:4
 
 # Set bash to 'debug' mode, it will exit on :
-# -e 'error', -u 'undefined variable', -o ... 'error in pipeline', -x 'print commands',
+# -e 'error', -o ... 'error in pipeline', -x 'print commands',
 set -e
-set -u
 set -o pipefail
 
 export MIOPEN_FIND_MODE=3
