@@ -10,9 +10,6 @@ class MelSpec:
         n_fft=2048,
         hop_size=640,
     ):
-        """
-        normalization: Whether to normalize audio using rms
-        """
         self.fs = fs
         self.n_fft = n_fft
         self.hop_size = hop_size

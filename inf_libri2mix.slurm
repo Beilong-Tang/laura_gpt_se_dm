@@ -8,6 +8,12 @@
 #SBATCH --ntasks-per-node=4
 #SBATCH --gres=dcu:4
 
+# Set bash to 'debug' mode, it will exit on :
+# -e 'error', -u 'undefined variable', -o ... 'error in pipeline', -x 'print commands',
+set -e
+set -u
+set -o pipefail
+
 export MIOPEN_FIND_MODE=3
 export HSA_FORCE_FINE_GRAIN_PRICE=1
 export NCCL_IB_HCA=mlx5_0

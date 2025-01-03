@@ -75,7 +75,7 @@ class Trainer:
         self.new_bob = config.new_bob
         self.cv_log = {}
         ## Mel Spectrogram
-        self.mel_process = MelSpec(normalization=config.norm_noisy)
+        self.mel_process = MelSpec()
         if resume != "":
             ## loading ckpt
             self._log(f"loading model from {resume}...")
