@@ -49,7 +49,7 @@ def save(path, content, epoch, max_ckpt=1):
         max_ckpt = 1
     dirname = op.dirname(path)
     files = sorted(
-        [f for f in files if (f.endswith(".pth") and "best" not in f)],
+        [f for f in os.listdir(dirname) if (f.endswith(".pth") and "best" not in f)],
         key=lambda x: int(re.search(r"[0-9]+", x).group()),
     )
     files = list(filter(lambda x: int(re.search(r"[0-9]+", x).group()) < epoch, files))
