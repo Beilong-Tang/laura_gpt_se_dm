@@ -48,8 +48,8 @@ gpus="cuda:0 cuda:1 cuda:2 cuda:3"
 # Eval #
 ########
 dns_model_dir="/public/home/qinxy/bltang/ml_framework_slurm/recipes/DNSMOS"
-wer_model="large"
-wer_num_proc=4
+wer_model="base"
+wer_num_proc=8
 
 # DONT CHANGE #
 wer_reference="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/whisper/whisper_$wer_model.txt"
