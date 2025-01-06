@@ -3,7 +3,7 @@
 #SBATCH -N 1
 #SBATCH -o log_infer.out
 #SBATCH -e log_infer.err
-#SBATCH -p kshdnormal
+#SBATCH -p kshdnormal02
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks-per-node=4
 #SBATCH --gres=dcu:4
@@ -48,8 +48,8 @@ gpus="cuda:0 cuda:1 cuda:2 cuda:3"
 # Eval #
 ########
 dns_model_dir="/public/home/qinxy/bltang/ml_framework_slurm/recipes/DNSMOS"
-wer_model="base"
-wer_num_proc=8
+wer_model="large"
+wer_num_proc=4
 
 # DONT CHANGE #
 wer_reference="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/whisper/whisper_$wer_model.txt"
