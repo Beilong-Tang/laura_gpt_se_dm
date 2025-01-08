@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH -J inf_laura_se_libri2mix
+#SBATCH -J inf_laura_se_tmp
 #SBATCH -N 1
-#SBATCH -o log_infer.out
-#SBATCH -e log_infer.err
+#SBATCH -o tmp/log_infer_tmp.out
+#SBATCH -e tmp/log_infer_tmp.err
 #SBATCH -p kshdnormal
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks-per-node=4
