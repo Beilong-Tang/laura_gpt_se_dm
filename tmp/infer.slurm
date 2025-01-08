@@ -39,13 +39,11 @@ num_proc=2
 gpus="cuda:0 cuda:1"
 
 output_dir=$(dirname $scp)/output
-mkdir -p output_dir
 ###############
 # DONT CHANGE #
 ###############
 
 config_path=exp/$name/$config_name
-output_dir="output/$name/$(basename $config_name .yaml)"
 model_ckpt="$(dirname "$config_path")/$(basename "$config_path" .yaml)/ckpt/best.pth"
 
 # Inference #
