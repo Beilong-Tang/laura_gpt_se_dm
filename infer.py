@@ -26,7 +26,7 @@ def parse_args():
 
     parser.add_argument("--scp", type=str, default = None)
     parser.add_argument(
-        "--raw_audios",
+        "--raw_audio",
         nargs="+",
         default=[],
         help="""the path of the list of audios to infer. If specificed, use this instead of scp argument 
