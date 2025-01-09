@@ -1,6 +1,7 @@
 ## Inference python scripts
 import os
 import argparse
+
 import logging
 import torch
 import torch.multiprocessing as mp
@@ -23,7 +24,14 @@ def parse_args():
     parser.add_argument("--sampling", default=25, type=int)
     parser.add_argument("--beam_size", default=1, type=int)
 
-    parser.add_argument("--scp", type=str)
+    parser.add_argument("--scp", type=str, default = None)
+    parser.add_argument(
+        "--raw_audios",
+        nargs="+",
+        default=[],
+        help="""the path of the list of audios to infer. If specificed, use this instead of scp argument 
+        e.g. path/to/a.wav path/to/b.wav ...""",
+    )
     parser.add_argument("--config", type=str)
     parser.add_argument("--model_ckpt", type=str)
     parser.add_argument("--output_dir", type=str)
@@ -37,6 +45,7 @@ def parse_args():
 
 
 def main(args):
+    print(args)
     os.makedirs(args.output_dir, exist_ok=True)
     setup_seed(1234, 0)
     mp.spawn(inference, args=(args,), nprocs=args.num_proc, join=True)
@@ -52,8 +61,13 @@ def inference(rank, args):
     # device setup
     device = args.gpus[rank % len(args.gpus)]
     # data for each process setup
-    scp = get_source_list(args.scp)
-    scp = scp[rank :: args.num_proc]
+    if args.scp is not None:
+        scp = get_source_list(args.scp)
+    elif len(args.raw_audio) != 0:
+        scp = args.raw_audio
+    else:
+        raise Exception("Either 'scp' or 'raw_audio' arg must be specificed.")
+    scp = scp[rank::args.num_proc]
     # logger
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
@@ -101,17 +115,3 @@ def normalize(output: np.ndarray, mixture: np.ndarray):
 if __name__ == "__main__":
     args = parse_args()
     main(args)
-    # parser = argparse.ArgumentParser()
-    # ## Codec
-    # parser.add_argument("--codec_config_file", type=str)
-    # parser.add_argument("--codec_model_file", type=str)
-    #
-    # parser.add_argument("--config", type=str)
-    # parser.add_argument("--model_ckpt", type=str)
-    # parser.add_argument("--output_dir", type=str)
-    # parser.add_argument("--raw_inputs", nargs="*", default=None, type=str)
-    # parser.add_argument("--tokenize_to_phone", action="store_true")
-    # args = parser.parse_args()
-    # update_args(args, args.default_config)
-    # main(args)
-    # pass
