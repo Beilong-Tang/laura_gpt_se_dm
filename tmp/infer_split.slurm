@@ -32,10 +32,12 @@ module load compiler/rocm/dtk-23.10
 # Setting #
 ###########
 
+
 # This script dynamically splits the 
+input_dir="tmp/split" # Running inference on all the audios in this input_dir (including subdir)
+
 name="libri2mix"
 config_name="config.yaml"
-input_dir="tmp/split" # Running inference on all the audios in this input_dir (including subdir)
 num_proc=4
 gpus="cuda:0 cuda:1 cuda:2 cuda:3"
 
@@ -43,13 +45,13 @@ output_dir=$(dirname $scp)/output/$(basename $input_dir)
 ###############
 # DONT CHANGE #
 ###############
-raw_audio=$(find tmp/split -type f -name "*.wav" -exec realpath {} \;)
+raw_audio=$(find $input_dir -type f -name "*.wav" -exec realpath {} \;)
 config_path=exp/$name/$config_name
 model_ckpt="$(dirname "$config_path")/$(basename "$config_path" .yaml)/ckpt/best.pth"
 
 # Inference #
 
-echo "[Inference tmp]"
+echo "[Inference tmp split]"
 python infer.py --raw_audio $raw_audio --config $config_path --model_ckpt $model_ckpt --output_dir "$output_dir/wavs" --num_proc $num_proc --gpus $gpus
 
 
