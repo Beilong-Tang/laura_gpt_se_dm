@@ -41,7 +41,7 @@ config_name="config.yaml"
 num_proc=4
 gpus="cuda:0 cuda:1 cuda:2 cuda:3"
 
-output_dir=$(dirname $scp)/output/$(basename $input_dir)
+output_dir=$(dirname $input_dir)/output/$(basename $input_dir)
 ###############
 # DONT CHANGE #
 ###############
