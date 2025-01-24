@@ -123,6 +123,18 @@ def get_source_list(file_path: str, ret_name=False):
     return files
 
 
+def list_to_files(arr: list, file_path):
+    dir_name = os.path.dirname(file_path)
+    os.makedirs(dir_name, exist_ok=True)
+    with open(file_path, "w") as f:
+        for e in arr:
+            if e.endswith("\n"):
+                f.write(e)
+            else:
+                f.write(e + "\n")
+
+
+
 def merge_content(files: List[str], save_path: str):
     """
     Merge contents from each file in files to save_path
