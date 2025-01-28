@@ -109,6 +109,9 @@ class AttrDict(Namespace):
 
 
 def get_source_list(file_path: str, ret_name=False):
+    """
+    the file content should be uid, (fs), path
+    """
     files = []
     names = []
     with open(file_path, "r") as f:
