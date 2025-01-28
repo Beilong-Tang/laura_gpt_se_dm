@@ -4,4 +4,4 @@ python recipes/resample_scp.py --scp "/DKUdata/tangbl/data/urgent2025_challenge/
     --base_path "/DKUdata/tangbl/data/urgent2025_challenge" \
     --output_dir "/DKUdata/tangbl/data/urgent2025_challenge/resampled/speech" \
     --sample_rate 16000 \
-    --num_proc 8
+    --num_proc 16
