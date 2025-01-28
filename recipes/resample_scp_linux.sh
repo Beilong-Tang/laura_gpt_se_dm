@@ -19,7 +19,8 @@ resample_audio() {
     
     
     # Resample to 16kHz (adjust -ar value as needed)
-    ffmpeg -i "$base_path/$input_path" -ar 16000 "$output_path" -y
+    # ffmpeg -i "$base_path/$input_path" -ar 16000 "$output_path" -y
+    echo "$base_path/$input_path"
 }
 
 # Export the function to make it available to xargs
