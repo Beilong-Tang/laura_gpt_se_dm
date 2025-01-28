@@ -29,3 +29,5 @@ export base_path
 
 # Use xargs to run resample_audio in parallel
 cat "$input_scp" | xargs -n 3 -P 8 -I {} bash -c 'resample_audio "$@"' _ {}
+
+echo "Done"
