@@ -31,14 +31,14 @@ output_dir="/DKUdata/tangbl/data/urgent2025_challenge/resampled/validation/clean
 input_scp="/DKUdata/tangbl/data/urgent2025_challenge/data/validation/spk1.scp"
 export output_dir
 
-cat "$input_scp" | xargs -n 3 -P 12 bash -c 'resample_audio "$@"' _
+cat "$input_scp" | xargs -n 3 -P 4 bash -c 'resample_audio "$@"' _
 
 ## Inference nosiy speech
 output_dir="/DKUdata/tangbl/data/urgent2025_challenge/resampled/validation/noisy_$target_sr"
 input_scp="/DKUdata/tangbl/data/urgent2025_challenge/data/validation/wav.scp"
 export output_dir
 
-cat "$input_scp" | xargs -n 3 -P 12 bash -c 'resample_audio "$@"' _
+cat "$input_scp" | xargs -n 3 -P 4 bash -c 'resample_audio "$@"' _
 
 
 echo "Done"
