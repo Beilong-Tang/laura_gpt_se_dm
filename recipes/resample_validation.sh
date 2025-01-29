@@ -9,8 +9,9 @@ target_sr=16000
 # Function to resample audio
 resample_audio() {
     uid="$1"
-    fr="$2"
-    input_path="$3"
+    # fr="$2"
+    # No fr as the second element of the line
+    input_path="$2"
     output_path="$output_dir/$input_path"
 
     mkdir -p "$(dirname "$output_path")"
