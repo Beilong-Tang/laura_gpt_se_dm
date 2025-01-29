@@ -17,10 +17,15 @@ resample_audio() {
 
     mkdir -p "$(dirname "$output_path")"
     
-    
+    # echo $uid
+    # echo $fr
+    # echo $input_path
+
     # Resample to 16kHz (adjust -ar value as needed)
-    # ffmpeg -i "$base_path/$input_path" -ar 16000 "$output_path" -y
-    echo "$base_path/$input_path"
+    ffmpeg -i "$base_path/$input_path" -map_channel 0.0.0 -ar 16000 "$output_path" -y
+    # ffmpeg -i "$full_input_path" -map_channel 0.0.0 -ar 16000 "$output_path" -y
+    # echo $output_path
+    # echo "$base_path/$input_path"
 }
 
 # Export the function to make it available to xargs
@@ -29,6 +34,6 @@ export output_dir
 export base_path
 
 # Use xargs to run resample_audio in parallel
-cat "$input_scp" | xargs -n 3 -P 8 -I {} bash -c 'resample_audio "$@"' _ {}
+cat "$input_scp" | xargs -n 3 -P 24 bash -c 'resample_audio "$@"' _
 
 echo "Done"
