@@ -242,6 +242,7 @@ def generate_from_config(info: dict, noise_dic, wind_noise_dic, rir_dic, force_1
         noisy_speech = speech_sample
     pass
     
+    dprint(f"noisy speech shape Before adding noise: {noisy_speech.shape}")
     # simulation with non-linear wind-noise mixing
     if noise_uid.startswith("wind_noise"):
         nuid, _ = info["noise_uid"]
