@@ -70,6 +70,8 @@ def main(rank, args):
     ## load laura gpt model
     model: nn.Module = Text2AudioGenTask.build_model(args)
     model.cuda()
+    l.info(f"model {model} is intialized")
+    l.info(f"model parameters: {sum(p.numel() for p in model.parameters())}")
     for p in args.init_param:
         l.info(f"Loading pretrained params from {p}")
         load_pretrained_model(
@@ -81,7 +83,6 @@ def main(rank, args):
             map_location=f"cuda:{torch.cuda.current_device()}",
         )
     model = DDP(model, device_ids=[args.gpu])
-    l.info(f"model {model} is intialized")
     ## optimizer
     optim = init(torch.optim, args.optim, model.parameters())
     ## scheduler

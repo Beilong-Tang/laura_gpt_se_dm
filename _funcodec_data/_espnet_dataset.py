@@ -34,6 +34,7 @@ from typing import Union
 import yaml
 
 from utils.audio import read_audio
+from utils.utils import AttrDict
 from dataset.augmentation import generate_from_config, generate_augmentations_config
 
 
@@ -152,7 +153,7 @@ class DmMixNoiseReader:
         self.clean_scp = read_2column_text(path) # uid - path
         with open(conf_dm_noise, "r") as f:
             conf = yaml.safe_load(f)
-        self.conf = conf
+        self.conf = AttrDict(**conf)
 
         # Noise
         self.noise_dic = {}
