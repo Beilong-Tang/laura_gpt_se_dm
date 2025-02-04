@@ -332,8 +332,9 @@ class DMESPnetDataset(ESPnetDataset):
         max_cache_fd: int = 0,
         conf_dm_noise='conf_dm_noise/simulation_train.yaml',
     ):
+        self.conf_dm_noise = conf_dm_noise # This line has to be written before the super().__init__() method
         super().__init__(path_name_type_list, preprocess, float_dtype, int_dtype, max_cache_size, max_cache_fd)
-        self.conf_dm_noise = conf_dm_noise
+        
     
 
     def _build_loader(
