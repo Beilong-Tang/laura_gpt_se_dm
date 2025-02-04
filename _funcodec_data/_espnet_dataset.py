@@ -187,6 +187,7 @@ class DmMixNoiseReader:
 
 
     def __getitem__(self, uid):
+        print(f"DM Mix data set: {uid}")
         speech_path = self.clean_scp[uid]
         audio, fs_speech = read_audio(speech_path, force_1ch=True)
         meta = generate_augmentations_config(self.conf, fs_speech, audio, self.noise_dic, self.rir_noise_dic)
