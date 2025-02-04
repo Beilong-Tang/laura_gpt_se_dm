@@ -3,15 +3,15 @@
 #########################################
 
 noise:
-  scp: "../urgent2025_challenge/data/noise_train.scp"
+  scp: "/public/home/qinxy/bltang/urgent/urgent2025_challenge_16k/resampled/train_scp/noise_train.scp"
   # ignore_prefix: []
 wind_noise:
-  scp: "../urgent2025_challenge/data/tmp/wind_noise_train.scp"
+  scp: "/public/home/qinxy/bltang/urgent/urgent2025_challenge_16k/resampled/train_scp/wind_train.scp"
   # ignore_prefix: []
 rir:
-  scp: "../urgent2025_challenge/data/rir_train.scp"
+  scp: "/public/home/qinxy/bltang/urgent/urgent2025_challenge_16k/resampled/train_scp/rir_train.scp"
   # ignore_prefix: []
-base_path: /public/home/qinxy/bltang/urgent/urgent2025_challenge
+# base_path: /public/home/qinxy/bltang/urgent/urgent2025_challenge
 
 sr: 16000
 

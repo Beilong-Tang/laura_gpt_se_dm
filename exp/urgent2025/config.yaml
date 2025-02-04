@@ -8,7 +8,7 @@ train_shape_file: ["/public/home/qinxy/bltang/urgent/urgent2025_challenge_16k/re
 valid_shape_file: ["/public/home/qinxy/bltang/urgent/urgent2025_challenge_16k/resampled/funcodec/dev/all_shape.scp"]
 train_data_path_and_name_and_type: [
     [
-        "/public/home/qinxy/bltang/urgent/urgent2025_challenge_16k/resampled/train_scp/spk1.scp",
+        "/public/home/qinxy/bltang/urgent/urgent2025_challenge_16k/resampled/train_scp/spk1_absolute.scp",
         "text",
         "dm_mix_noise"
     ],
@@ -34,14 +34,14 @@ valid_data_path_and_name_and_type: [
 #########################################################################################
 ## conf_dm_noise, if specified, use Dynamic Mixing for the Noise Following Urgent 2025 ##
 #########################################################################################
-conf_dm_noise: conf_dm_noise/simulation_train.yaml
+conf_dm_noise: conf_dm_noise/urgent_2025_simulation_train.yaml
 
 grad_clip: 5
 seed: 1234
 init: null
 
 # input related
-input_size: 128 # Mel spectrogram the input size should be 80
+input_size: 128 # Mel spectrogram the input size should be 80, Does not really matter here.
 use_preprocessor: true
 audio_max_duration: 60
 codec_token_rate: 25
