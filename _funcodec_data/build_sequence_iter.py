@@ -173,7 +173,7 @@ class IteratorOptions:
 def build_sequence_iter_factory(
             args: argparse.Namespace, iter_options: IteratorOptions, mode: str
     ) -> AbsIterFactory:    
-        assert check_argument_types()
+        # assert check_argument_types()
 
         dataset = DMESPnetDataset(
             iter_options.data_path_and_name_and_type,
