@@ -187,10 +187,9 @@ class DmMixNoiseReader:
 
 
     def __getitem__(self, uid):
-        print(f"DM Mix data set: {uid}")
         speech_path = self.clean_scp[uid]
         audio, fs_speech = read_audio(speech_path, force_1ch=True)
-        meta = generate_augmentations_config(self.conf, fs_speech, audio, self.noise_dic, self.rir_noise_dic)
+        meta = generate_augmentations_config(self.conf, fs_speech, audio, self.noise_dic, self.wind_noise_dic, self.rir_noise_dic)
         _, noisy = generate_from_config(meta, self.noise_dic, self.wind_noise_dic, self.rir_noise_dic) #[1,T], #[1,T]
 
         return torch.from_numpy(noisy).squeeze(0) # [T]
