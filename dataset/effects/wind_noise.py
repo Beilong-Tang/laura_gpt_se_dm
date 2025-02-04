@@ -64,8 +64,8 @@ def add_wind_noise(audio: np.ndarray, noise: np.ndarray, sr: int, params):
             )
             stdout, stderr = ffmpeg_process.communicate(input=byte_io.read())
             res, sr = sf.read(output_tmp_wav.name)
-    if len(audio.shape) == 2:
-        return np.expand_dims(res, axis=0)
+    if len(audio.shape) == 1:
+        return np.expand_dims(res, axis=0) # [1,T]
     else:
         return res
 
