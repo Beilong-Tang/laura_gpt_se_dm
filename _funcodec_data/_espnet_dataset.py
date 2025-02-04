@@ -175,7 +175,7 @@ class DmMixNoiseReader:
         self.conf.weight_augmentations = weight_augmentations / np.sum(weight_augmentations)
 
         self.sr = conf["sr"]
-        self.repeat_per_utt = conf["repeat_per_utt"]
+        # self.repeat_per_utt = conf["repeat_per_utt"]
 
         pass 
 
