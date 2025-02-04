@@ -228,7 +228,6 @@ def generate_from_config(info: dict, noise_dic, wind_noise_dic, rir_dic, force_1
     noise_sample = read_audio(noise_path, force_1ch=force_1ch, fs=fs)[0] # resampled noise [1,T]
     noisy_speech = deepcopy(speech_sample)
 
-    dprint(f"noisy speech shape Before RIR: {noisy_speech.shape}")
     # augmentation information, split by /
     augmentations = info["augmentation"].split("/")
     rir_uid, rir_fs = info["rir_uid"]
@@ -243,7 +242,6 @@ def generate_from_config(info: dict, noise_dic, wind_noise_dic, rir_dic, force_1
         noisy_speech = speech_sample
     pass
     
-    dprint(f"noisy speech shape Before adding noise: {noisy_speech.shape}")
     # simulation with non-linear wind-noise mixing
     if noise_uid.startswith("wind_noise"):
         nuid, _ = info["noise_uid"]
@@ -283,7 +281,6 @@ def generate_from_config(info: dict, noise_dic, wind_noise_dic, rir_dic, force_1
         noisy_speech, noise_sample = mix_noise(
             noisy_speech, noise_sample, snr=snr
         )
-    dprint(f"Initiallay noisy speech shape: {noisy_speech.shape}")
      # apply an additional augmentation
     for augmentation in augmentations:
         if augmentation == "none" or augmentation == "":
@@ -308,7 +305,6 @@ def generate_from_config(info: dict, noise_dic, wind_noise_dic, rir_dic, force_1
                 f"codec\(format=(.*),encoder=(.*),qscale=(.*)\)", augmentation
             )
             format, encoder, qscale = match.groups()
-            dprint(f"noisy speech shape : {noisy_speech.shape}")
             noisy_speech = codec_compression(
                 noisy_speech, fs, format=format, encoder=encoder, qscale=int(qscale)
             )
