@@ -1,24 +1,14 @@
-# LauraGPT
+# LauraGPT_SE
+
+Follow Funcodec Laura GPT for SE model structure
 
 
-Unofficial Implementation for [LauraGPT](https://arxiv.org/abs/2310.04673)
-
-This repository simplifies the code for training the LauraGPT model.
-
-Prerequisite: 
-    1. FunCodec Installed
-
-We currently support
-    - [x] LauraTTS.
+## TODO:
+- [x] Upload noise, rir scp to the server
+- [ ] Split the noise into noise and wind noise
+- [ ] Deal with base path in `conf_dm_noise` and the `DMEspnetDataset`
+- [ ] Remove the fs column of the scp files, make it a two column 
+- [ ] Potential Problem (Scale not the same.., and it adds early reverberation)
+- [ ] Experiment yaml config should have a field specifying the `conf_dm_noise` specifying the path of the augmentation config. 
 
 
-To run the training scheme, do 
-```shell
-python3 train.py --config config/conf.yaml
-```
-
-It will train on gpus 0,1,2,3. 
-
-We use 6 layers of the decoder-only LM instead of 12 as proposed in the config lauraGPT model.
-
-We trained our model on 32GB GPU cards.

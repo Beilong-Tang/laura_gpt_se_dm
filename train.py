@@ -14,7 +14,7 @@ from funcodec.tasks.text2audio_generation import Text2AudioGenTask
 from funcodec.schedulers.warmup_lr import WarmupLR
 from funcodec.torch_utils.load_pretrained_model import load_pretrained_model
 
-from _funcodec import init_sequence_iter_factory
+from _funcodec import init_sequence_iter_factory, init_dm_sequence_iter_factory
 
 from trainer.abs_trainer import Trainer
 from utils.utils import setup_logger, init, AttrDict
@@ -90,7 +90,13 @@ def main(rank, args):
     l.info(f"scheduler {scheduler} and optim {optim} is initialized")
     ## setup dataloader
     ### Initialized iter factory
-    train_iter = init_sequence_iter_factory(args, rank, "train")
+
+    ## Check if the conf_dm_noise config is specified
+    ## If specified, use dynamic mixing for the noise
+    if args.conf_dm_noise is None:
+        train_iter = init_sequence_iter_factory(args, rank, "train")
+    else:
+        train_iter = init_dm_sequence_iter_factory(args, rank, 'train')
     val_iter = init_sequence_iter_factory(args, rank, "valid")
 
     ## ckpt_dir
