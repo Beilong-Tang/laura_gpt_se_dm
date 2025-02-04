@@ -17,6 +17,7 @@ from utils.audio import read_audio
 from utils.hinter import hint_once
 
 from utils.rir_utils import estimate_early_rir
+from utils.dprint import dprint
 # Avaiable sampling rates for bandwidth limitation
 
 AUGMENTATIONS = ("bandwidth_limitation", "clipping")
@@ -280,6 +281,7 @@ def generate_from_config(info: dict, noise_dic, wind_noise_dic, rir_dic, force_1
         noisy_speech, noise_sample = mix_noise(
             noisy_speech, noise_sample, snr=snr
         )
+    dprint(f"Initiallay noisy speech shape: {noisy_speech.shape}")
      # apply an additional augmentation
     for augmentation in augmentations:
         if augmentation == "none" or augmentation == "":
@@ -304,6 +306,7 @@ def generate_from_config(info: dict, noise_dic, wind_noise_dic, rir_dic, force_1
                 f"codec\(format=(.*),encoder=(.*),qscale=(.*)\)", augmentation
             )
             format, encoder, qscale = match.groups()
+            dprint(f"noisy speech shape : {noisy_speech.shape}")
             noisy_speech = codec_compression(
                 noisy_speech, fs, format=format, encoder=encoder, qscale=int(qscale)
             )
