@@ -14,14 +14,14 @@ export NCCL_IB_HCA=mlx5_0
 export NCCL_SOCKET_IFNAME=ib0
 
 # export ROCBLAS_TENSILE_LIBPATH=/public/software/compiler/rocm/dtk-23.10/lib/rocblas/library_dcu2
-
+source /public/software/apps/DeepLearning/whl/env.sh
 source ~/anaconda3/etc/profile.d/conda.sh
-conda activate bltang_new
+conda activate urgent2025 # using urgent2025 environment
 
 module purge
 module load compiler/devtoolset/7.3.1
 module load mpi/hpcx/2.7.4/gcc-7.3.1
-module load compiler/rocm/dtk-23.10
+module load compiler/dtk/24.04
 
 ###########
 # Setting #
