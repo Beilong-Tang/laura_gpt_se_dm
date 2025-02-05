@@ -237,6 +237,9 @@ def build_sequence_iter_factory(
                         f"{len(batch)} < {world_size}"
                     )
             batches = [batch[rank::world_size] for batch in batches]
+        
+        ## TODO: limit batches with a best size
+
 
         return SequenceIterFactory(
             dataset=dataset,

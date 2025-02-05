@@ -3,6 +3,7 @@ import torch
 import os
 import time
 import torch.distributed as dist
+import torch.distributed
 from utils.mel_spectrogram import MelSpec
 from datetime import timedelta
 
@@ -12,6 +13,7 @@ from utils.utils import Logger
 
 from .helper import dict_to_str, save
 from utils.hinter import hint_once, check_hint
+from utils.dprint import dprint
 
 
 def gather_tensors(tensor):
@@ -101,7 +103,7 @@ class Trainer:
         for key, value in _data.items():
             data_shape.append(f"{key}:{value.shape}")
             _data[key] = value.cuda()
-        hint_once(f"batch data shape {','.join(data_shape)}", 'data_shape')
+        dprint(f"batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}")
         
         ## Process Mel Spectrogram ##
         loss, stats, weight = self.model(**_data)
