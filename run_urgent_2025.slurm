@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J run_laura_se_urgent2025
-#SBATCH -N 8
+#SBATCH -N 2
 #SBATCH -o log_urgent_2025.out
 #SBATCH -e log_urgent_2025.err
 #SBATCH -p kshdnormal02
