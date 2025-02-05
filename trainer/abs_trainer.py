@@ -81,7 +81,8 @@ class Trainer:
         self.mel_process = MelSpec()
         
         ## Max Length Constraint
-        self.max_len_filter = MaxLength([i[1] for i in config.train_data_path_and_name_and_type], int(config.audio_max_duration * config.codec_token_rate))
+        self.max_len_filter = MaxLength([i[1] for i in config.train_data_path_and_name_and_type], 
+                                        int(config.audio_max_duration * config.codec_token_rate))
 
         if resume != "":
             ## loading ckpt
@@ -105,7 +106,7 @@ class Trainer:
             _data["text"], _data["text_lengths"]
         )
         ## Preprocess:
-        data = self.max_len_filter(data)
+        _data = self.max_len_filter(_data)
         data_shape = []
         for key, value in _data.items():
             data_shape.append(f"{key}:{value.shape}")
