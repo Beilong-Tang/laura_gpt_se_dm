@@ -112,7 +112,7 @@ class Trainer:
             ## Shrinking data shape to have a maximum
             # value = value[:, :int(self.config.audio_max_duration * self.config.codec_token_rate)]
             _data[key] = value.cuda()
-        hint_once(f"batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}")
+        hint_once(f"batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}", "data_shape")
         
         ## Process Mel Spectrogram ##
         loss, stats, weight = self.model(**_data)
