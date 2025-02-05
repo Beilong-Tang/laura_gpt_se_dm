@@ -110,8 +110,8 @@ model_conf:
 
 ### Training related
 batch_type: length
-batch_bins: 7680
-batch_size: 20 # This does not matter here
+batch_bins: 4800
+batch_size: 40 # This does not matter here
 sort_in_batch: descending
 sort_batch: descending
 num_workers: 8
