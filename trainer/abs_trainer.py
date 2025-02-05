@@ -102,6 +102,8 @@ class Trainer:
         data_shape = []
         for key, value in _data.items():
             data_shape.append(f"{key}:{value.shape}")
+            ## Shrinking data shape to have a maximum
+            value = value[:, :int(self.config.audio_max_duration * self.config.codec_token_rate)]
             _data[key] = value.cuda()
         dprint(f"batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}")
         
