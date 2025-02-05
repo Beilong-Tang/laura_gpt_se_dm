@@ -37,6 +37,8 @@ from utils.audio import read_audio
 from utils.utils import AttrDict
 from dataset.augmentation import generate_from_config, generate_augmentations_config
 
+from utils.hinter import hint_once
+
 
 class AdapterForSoundScpReader(collections.abc.Mapping):
     def __init__(self, loader, dtype=None):
@@ -192,6 +194,7 @@ class DmMixNoiseReader:
         meta = generate_augmentations_config(self.conf, fs_speech, audio, self.noise_dic, self.wind_noise_dic, self.rir_noise_dic)
         _, noisy = generate_from_config(meta, self.noise_dic, self.wind_noise_dic, self.rir_noise_dic) #[1,T], #[1,T]
 
+        hint_once(uid, "data")
         return torch.from_numpy(noisy).squeeze(0) # [T]
 
 DATA_TYPES = {
