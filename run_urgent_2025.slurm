@@ -54,9 +54,9 @@ master_addr=$(scontrol show hostnames "$SLURM_JOB_NODELIST" | head -n 1)
 export MASTER_ADDR=$master_addr
 echo "MASTER_ADDR="$MASTER_ADDR
 
-srun python train.py --config $config_path --log $log_path --ckpt_path $ckpt_path --resume $resume
+srun python -u train.py --config $config_path --log $log_path --ckpt_path $ckpt_path --resume $resume
 ###############
 ## Run  DDP  ##
 ###############
 # export CUDA_VISIBLE_DEVICES="0,1,2,3"
-# python train.py --config $config_path --log $log_path --ckpt_path $ckpt_path --resume $resume
+# python -u train.py --config $config_path --log $log_path --ckpt_path $ckpt_path --resume $resume
