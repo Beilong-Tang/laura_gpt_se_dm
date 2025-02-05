@@ -47,7 +47,6 @@ def main(rank, args):
     #########
     ## DDP ##
     #########
-    setup_seed(args.seed, rank)
     if "SLURM_PROCID" in os.environ:
         rank = args.rank
         device = args.gpu
@@ -56,6 +55,7 @@ def main(rank, args):
         device = rank % torch.cuda.device_count()
         pass
     torch.cuda.set_device(device)
+    setup_seed(args.seed, rank)
 
     #####################
     # LauraGPT Specific #
