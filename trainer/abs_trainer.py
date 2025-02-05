@@ -12,9 +12,8 @@ from funcodec.torch_utils.recursive_op import recursive_average
 from utils.utils import Logger
 
 from .helper import dict_to_str, save
-from utils.hinter import hint_once, check_hint
+from utils.hinter import hint_once 
 from utils.max_filter import MaxLength
-from utils.dprint import dprint
 
 
 def gather_tensors(tensor):
@@ -113,7 +112,7 @@ class Trainer:
             ## Shrinking data shape to have a maximum
             # value = value[:, :int(self.config.audio_max_duration * self.config.codec_token_rate)]
             _data[key] = value.cuda()
-        dprint(f"batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}")
+        hint_once(f"batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}")
         
         ## Process Mel Spectrogram ##
         loss, stats, weight = self.model(**_data)
