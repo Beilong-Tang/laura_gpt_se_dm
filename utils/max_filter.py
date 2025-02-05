@@ -31,7 +31,7 @@ class MaxLength():
                 res=[]
                 res_len = []
                 batch = data[_key]
-                batch_lens = data[_key+"_lens"]
+                batch_lens = data[_key+"_lengths"]
                 for item, item_len in zip(batch, batch_lens): # [T,*]
                     item = item[:item_len.item()]
                     ## Apply maximum here
@@ -40,5 +40,5 @@ class MaxLength():
                     res_len.append(item.size(0))
                 res = pad_list(res, 0.0)
                 _res_dict[_key] = res 
-                _res_dict[_key+"_lens"] = torch.tensor(res_len, dtype = torch.long)
+                _res_dict[_key+"_lengths"] = torch.tensor(res_len, dtype = torch.long)
             return _res_dict
