@@ -101,7 +101,7 @@ class Trainer:
         for key, value in _data.items():
             data_shape.append(f"{key}:{value.shape}")
             _data[key] = value.cuda()
-        hint_once(f"{','.join(data_shape)}", 'data_shape', 0)
+        hint_once(f"batch data shape {','.join(data_shape)}", 'data_shape', 0)
         
         ## Process Mel Spectrogram ##
         loss, stats, weight = self.model(**_data)
