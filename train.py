@@ -158,10 +158,10 @@ if __name__ == "__main__":
     ## Running Slurm ##
     ###################
     if "WORLD_SIZE" in os.environ:
-        print("running slurm")
         args.rank = int(os.environ["SLURM_PROCID"])
         args.world_size = int(os.environ["WORLD_SIZE"])
         args.gpu = args.rank % torch.cuda.device_count()
+        print(f"running slurm on world size {args.world_size} and device num: {torch.cuda.device_count()}")
         dist.init_process_group(
             backend=args.dist_backend,
             init_method=args.dist_url,
