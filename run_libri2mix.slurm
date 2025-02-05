@@ -28,7 +28,7 @@ module load compiler/rocm/dtk-23.10
 ###########
 
 name="libri2mix"
-config_path=exp/$name/config.yaml
+config_path=exp/$name/t.yaml
 resume=""
 
 ###############
