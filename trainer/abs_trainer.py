@@ -13,6 +13,7 @@ from utils.utils import Logger
 
 from .helper import dict_to_str, save
 from utils.hinter import hint_once, check_hint
+from utils.max_filter import MaxLength
 from utils.dprint import dprint
 
 
@@ -78,6 +79,10 @@ class Trainer:
         self.cv_log = {}
         ## Mel Spectrogram
         self.mel_process = MelSpec()
+        
+        ## Max Length Constraint
+        self.max_len_filter = MaxLength([i[1] for i in config.train_data_path_and_name_and_type], int(config.audio_max_duration * config.codec_token_rate))
+
         if resume != "":
             ## loading ckpt
             self._log(f"loading model from {resume}...")
@@ -99,11 +104,13 @@ class Trainer:
         _data["text"], _data["text_lengths"] = self.mel_process.mel(
             _data["text"], _data["text_lengths"]
         )
+        ## Preprocess:
+        data = self.max_len_filter(data)
         data_shape = []
         for key, value in _data.items():
             data_shape.append(f"{key}:{value.shape}")
             ## Shrinking data shape to have a maximum
-            value = value[:, :int(self.config.audio_max_duration * self.config.codec_token_rate)]
+            # value = value[:, :int(self.config.audio_max_duration * self.config.codec_token_rate)]
             _data[key] = value.cuda()
         dprint(f"batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}")
         
