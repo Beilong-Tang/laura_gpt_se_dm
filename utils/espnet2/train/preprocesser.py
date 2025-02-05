@@ -61,7 +61,7 @@ def detect_non_silence(
     >>> assert detect.dtype == np.bool
     """
     if x.shape[-1] < frame_length:
-        return np.full(x.shape, fill_value=True, dtype=np.bool)
+        return np.full(x.shape, fill_value=True, dtype=np.bool_)
 
     if x.dtype.kind == "i":
         x = x.astype(np.float64)
@@ -79,7 +79,7 @@ def detect_non_silence(
     # mean_power: (C, 1)
     mean_power = np.mean(power, axis=-1, keepdims=True)
     if np.all(mean_power == 0):
-        return np.full(x.shape, fill_value=True, dtype=np.bool)
+        return np.full(x.shape, fill_value=True, dtype=np.bool_)
     # detect_frames: (C, T)
     detect_frames = power / mean_power > threshold
     # detects: (C, T, F)
