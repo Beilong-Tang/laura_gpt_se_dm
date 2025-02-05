@@ -101,7 +101,7 @@ model_conf:
         head: 8
         unit: 2048
         # layer: 12
-        layer: 12
+        layer: 8
         dropout_rate: 0.1
         pe_type: uni
         bidirectional_inputs: true
@@ -109,7 +109,7 @@ model_conf:
 
 ### Training related
 batch_type: length
-batch_bins: 3840
+batch_bins: 7680
 batch_size: 20 # This does not matter here
 sort_in_batch: descending
 sort_batch: descending
