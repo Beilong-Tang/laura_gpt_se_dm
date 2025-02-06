@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J inf_laura_se_libri2mix
+#SBATCH -J inf_laura_se_libri2mix_urgent2025
 #SBATCH -N 1
 #SBATCH -o log_infer.out
 #SBATCH -e log_infer.err
