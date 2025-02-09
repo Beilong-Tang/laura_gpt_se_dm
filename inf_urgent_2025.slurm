@@ -36,6 +36,7 @@ stop_stage=2 # 0: infer, 1: DNSMOS + SPKSIM 2: WER
 
 # 0. libri2mix mixture without norm
 name="urgent2025"
+dataset="libri2mix" # Specify which dataset to infer
 config_name="config.yaml"
 scp="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/list/test/mix.scp"
 libri2mix_clean_dir="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16k/min/test/s1" # for wespeaker only
@@ -58,7 +59,7 @@ wer_reference="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16
 # DONT CHANGE #
 ###############
 config_path=exp/$name/$config_name
-output_dir="output/$name/libri2mix/$(basename $config_name .yaml)"
+output_dir="output/$name/$dataset/$(basename $config_name .yaml)"
 model_ckpt="$(dirname "$config_path")/$(basename "$config_path" .yaml)/ckpt/best.pth"
 
 #######
