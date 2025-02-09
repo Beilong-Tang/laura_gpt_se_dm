@@ -58,7 +58,7 @@ wer_reference="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16
 # DONT CHANGE #
 ###############
 config_path=exp/$name/$config_name
-output_dir="output/$name/$(basename $config_name .yaml)"
+output_dir="output/$name/libri2mix/$(basename $config_name .yaml)"
 model_ckpt="$(dirname "$config_path")/$(basename "$config_path" .yaml)/ckpt/best.pth"
 
 #######
