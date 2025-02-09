@@ -8,3 +8,7 @@ ckpt/
 data/*
 *.log
 output/*
+
+
+## pyrightconfig.json
+pyrightconfig.json
