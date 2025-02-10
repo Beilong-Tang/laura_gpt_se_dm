@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH -J inf_laura_se_eval_urgent2025
 #SBATCH -N 1
-#SBATCH -o log_infer.out
-#SBATCH -e log_infer.err
+#SBATCH -o log/laura_se_eval_urgent2025_infer.out
+#SBATCH -e log/laura_se_eval_urgent2025_infer.err
 #SBATCH -p kshdnormal02
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks-per-node=4
