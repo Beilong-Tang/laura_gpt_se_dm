@@ -28,7 +28,7 @@ def main(args):
     df.to_csv(args.output)
     print(df.describe())
     with open(str(Path(args.output).parent / "wespeaker_sim.log"), "w") as f:
-        print(df.describe, file= f)
+        print(df.describe(), file= f)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

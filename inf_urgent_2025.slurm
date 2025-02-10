@@ -31,7 +31,7 @@ module load compiler/rocm/dtk-23.10
 ###########
 # Setting #
 ###########
-stage=0
+stage=2
 stop_stage=2 # 0: infer, 1: DNSMOS + SPKSIM 2: WER 
 
 # 0. libri2mix mixture without norm
@@ -59,7 +59,7 @@ wer_reference="/public/home/qinxy/bltang/data/LibriMix/Libri2Mix/Libri2Mix/wav16
 # DONT CHANGE #
 ###############
 config_path=exp/$name/$config_name
-output_dir="output/$name/$dataset/$(basename $config_name .yaml)"
+C="output/$name/$dataset/$(basename $config_name .yaml)"
 model_ckpt="$(dirname "$config_path")/$(basename "$config_path" .yaml)/ckpt/best.pth"
 
 #######
