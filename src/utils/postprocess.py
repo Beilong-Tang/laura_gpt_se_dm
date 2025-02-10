@@ -42,3 +42,16 @@ class MaxLength():
                 _res_dict[_key] = res 
                 _res_dict[_key+"_lengths"] = torch.tensor(res_len, dtype = torch.long)
             return _res_dict
+
+class CleanNoisyFilter():
+
+    def __init__(self):
+        """
+        Post process for data class that combines clean, noisy into data where each of them have the same length
+        """
+        pass 
+
+    def __call__(self, data:torch.Tensor, data_lengths: torch.Tensor):
+
+
+        pass

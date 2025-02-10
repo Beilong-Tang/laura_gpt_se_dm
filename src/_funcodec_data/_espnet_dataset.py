@@ -192,10 +192,10 @@ class DmMixNoiseReader:
         speech_path = self.clean_scp[uid]
         audio, fs_speech = read_audio(speech_path, force_1ch=True)
         meta = generate_augmentations_config(self.conf, fs_speech, audio, self.noise_dic, self.wind_noise_dic, self.rir_noise_dic)
-        _, noisy = generate_from_config(meta, self.noise_dic, self.wind_noise_dic, self.rir_noise_dic) #[1,T], #[1,T]
+        clean, noisy= generate_from_config(meta, self.noise_dic, self.wind_noise_dic, self.rir_noise_dic) #[1,T], #[1,T]
 
         hint_once(f"training data id {uid}", "data")
-        return torch.from_numpy(noisy).squeeze(0) # [T]
+        return clean.squeeze(0), noisy.squeeze(0) # [T]
 
 DATA_TYPES = {
     "dm_mix_noise": dict(

@@ -13,7 +13,7 @@ from utils.utils import Logger
 
 from .helper import dict_to_str, save
 from utils.hinter import hint_once 
-from utils.max_filter import MaxLength
+from src.utils.postprocess import MaxLength
 
 
 def gather_tensors(tensor):
@@ -105,6 +105,10 @@ class Trainer:
             _data["text"], _data["text_lengths"]
         )
         ## Preprocess:
+        ## Note that the text is composed of [clean,noisy], and clean noisy should have the same length
+
+        ## 1. Extract Clean Speech
+        
         _data = self.max_len_filter(_data)
         data_shape = []
         for key, value in _data.items():
