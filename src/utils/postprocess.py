@@ -52,6 +52,22 @@ class CleanNoisyFilter():
         pass 
 
     def __call__(self, data:torch.Tensor, data_lengths: torch.Tensor):
-
-
-        pass
+        res_clean_len = []
+        res_clean = []
+        res_noisy_len = []
+        res_noisy = []
+        for item, item_len in zip(data, data_lengths): # [T], 1'
+            _clean_noisy = item[:item_len.item()]
+            _each_length = int(item_len.item() / 2)
+            _clean = _clean_noisy[:_each_length]
+            _noisy = _clean_noisy[_each_length:]
+            assert len(_clean) == len(_noisy) 
+            res_clean_len.append(_each_length)
+            res_noisy_len.append(_each_length)
+            res_clean.append(_clean)
+            res_noisy.append(_noisy)
+        res_clean = pad_list(res_clean, 0.0)
+        res_noisy = pad_list(res_noisy, 0.0)
+        res_clean_len = torch.tensor(res_clean_len, dtype = torch.long)
+        res_noisy_len = torch.tensor(res_noisy_len, dtype = torch.long)
+        return res_clean, res_clean_len, res_noisy, res_noisy_len

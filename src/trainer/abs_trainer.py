@@ -13,7 +13,9 @@ from utils.utils import Logger
 
 from .helper import dict_to_str, save
 from utils.hinter import hint_once 
-from src.utils.postprocess import MaxLength
+from src.utils.postprocess import MaxLength, CleanNoisyFilter
+from funcodec.bin.codec_inference import Speech2Token
+from funcodec.modules.nets_utils import pad_list
 
 
 def gather_tensors(tensor):
@@ -80,8 +82,15 @@ class Trainer:
         self.mel_process = MelSpec()
         
         ## Max Length Constraint
-        self.max_len_filter = MaxLength([i[1] for i in config.train_data_path_and_name_and_type], 
+        self.max_len_filter = MaxLength(['text', 'codec'], 
                                         int(config.audio_max_duration * config.codec_token_rate))
+
+        ## Clean Noisy Filter
+        self.clean_noisy_filter = CleanNoisyFilter()
+
+        ## Funcodec Model to extract features
+        self.funcodec = Speech2Token(config_file = config.codec.config, model_file = config.codec.model, device='cuda')
+        self.funcodec.eval()
 
         if resume != "":
             ## loading ckpt
@@ -100,21 +109,36 @@ class Trainer:
     def _train_one_batch(self, batch, data, optim, if_log) -> dict:
         uttid, _data = data
 
-        # Mel Spectrogram Processing
+        # # Mel Spectrogram Processing
+        # _data["text"], _data["text_lengths"] = self.mel_process.mel(
+        #     _data["text"], _data["text_lengths"]
+        # )
+        ## Preprocess:
+        ## Note that the text is composed of [clean,noisy], and clean noisy should have the same length
+        ## 1. Extract Clean Speech and Noisy Speech
+        _data['text'], _data['text_lengths'], _data['codec'], _data['codec_lengths'] = self.clean_noisy_filter(_data['text'], _data['text_lengths'])
+        ## 2. Limit the maximum length
+        _data = self.max_len_filter(_data)
+        ## 3. Apply Mel to data text
         _data["text"], _data["text_lengths"] = self.mel_process.mel(
             _data["text"], _data["text_lengths"]
         )
-        ## Preprocess:
-        ## Note that the text is composed of [clean,noisy], and clean noisy should have the same length
+        ## 4. Apply Funcodec Extraction on _data['codec']
+        res = []
+        res_len = []
+        for audio in _data['codec']: # T
+            audio = audio.unsqueeze(0).unsqueeze(0) # [1,1,T]
+            codec = self.funcodec(audio, run_mod = "encode")[0][0].permute(1,2,0).squeeze(0) # [T, N]
+            res.append(codec)
+            res_len.append(len(codec))
+        res = pad_list(res, 0).to(torch.long) ## Make it to be a long value
+        res_len = torch.tensor(res_len, dtype=torch.long)
+        _data['codec'] = res 
+        _data['codec_lengths'] = res_len
 
-        ## 1. Extract Clean Speech
-        
-        _data = self.max_len_filter(_data)
         data_shape = []
         for key, value in _data.items():
             data_shape.append(f"{key}:{value.shape}")
-            ## Shrinking data shape to have a maximum
-            # value = value[:, :int(self.config.audio_max_duration * self.config.codec_token_rate)]
             _data[key] = value.cuda()
         hint_once(f"batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}", "data_shape")
         

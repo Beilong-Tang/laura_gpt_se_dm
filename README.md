@@ -1,4 +1,10 @@
 # LauraGPT_SE_DM
 
+## Different from laura_gpt 
 
-Note: Fix Mel Spec to use Log Mel, Need more testing
+It fixes the bug that laura_gpt does not scale the audio
+
+## TODO 
+
+- [ ] Add `codec` config in the config file.
+

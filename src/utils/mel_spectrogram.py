@@ -10,7 +10,7 @@ class MelSpec:
         fs=16000,
         n_fft=2048,
         hop_size=640,
-        log_mel=True,
+        log_mel=False,
     ):
         """
         Mel Spectrogram.
