@@ -129,6 +129,12 @@ class Trainer:
         _data["text"], _data["text_lengths"] = self.mel_process.mel(
             _data["text"], _data["text_lengths"]
         )
+            
+        ## Simply outputing the shape
+        data_shape = []
+        for key, value in _data.items():
+            data_shape.append(f"{key}:{value.shape}")
+        hint_once(f"before funcodec batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}", "data_shape")
         ## 4. Apply Funcodec Extraction on _data['codec']
         res = []
         res_len = []
@@ -142,6 +148,7 @@ class Trainer:
         _data['codec'] = res 
         _data['codec_lengths'] = res_len
 
+            
         data_shape = []
         for key, value in _data.items():
             data_shape.append(f"{key}:{value.shape}")
