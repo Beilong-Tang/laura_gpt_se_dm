@@ -79,7 +79,13 @@ class Trainer:
         self.new_bob = config.new_bob
         self.cv_log = {}
         ## Mel Spectrogram
-        self.mel_process = MelSpec()
+
+        if config.mel_config is not None: 
+            print(f"Using mel config: {config.mel_config}")
+            self.mel_process = MelSpec(**config.mel_config)
+        else:
+            self.mel_process = MelSpec()
+
         
         ## Max Length Constraint
         self.max_len_filter = MaxLength(['text', 'codec'], 
@@ -89,7 +95,7 @@ class Trainer:
         self.clean_noisy_filter = CleanNoisyFilter()
 
         ## Funcodec Model to extract features
-        self.funcodec = Speech2Token(config_file = config.codec.config, model_file = config.codec.model, device='cuda')
+        self.funcodec = Speech2Token(config_file = config.codec['codec'], model_file = config.codec['model'], device='cuda')
         self.funcodec.eval()
 
         if resume != "":

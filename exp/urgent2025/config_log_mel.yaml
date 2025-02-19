@@ -42,10 +42,14 @@ init: null
 
 # input related
 input_size: 128 # Mel spectrogram the input size should be 80, Does not really matter here.
-use_preprocessor: False # This does not matter here, but recommend to set it to False
+use_preprocessor: False # Set it to False
 #audio_max_duration: 60 # 
 audio_max_duration: 40 # 1000 tokens maximum
 codec_token_rate: 25
+# codec config
+codec:
+    codec: /public/home/qinxy/bltang/LLM_TTS/egs/exp/audio_codec-encodec-zh_en-general-16k-nq32ds640-pytorch/config.yaml
+    model: /public/home/qinxy/bltang/LLM_TTS/egs/exp/audio_codec-encodec-zh_en-general-16k-nq32ds640-pytorch/model.pth
 
 # network architecture
 # encoder related
@@ -124,6 +128,13 @@ train_dtype: float32
 allow_variable_data_keys: false
 drop_last: false
 fold_length: []
+
+### Added mel config
+mel_config:
+  n_fft: 512
+  hop_size: 256
+  log_mel: True
+
 
 optim:
     type: Adam

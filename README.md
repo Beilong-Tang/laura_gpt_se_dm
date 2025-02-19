@@ -6,5 +6,5 @@ It fixes the bug that laura_gpt does not scale the audio
 
 ## TODO 
 
-- [ ] Add `codec` config in the config file.
+- [x] Add `codec` config in the config file.
 
