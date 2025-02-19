@@ -75,7 +75,7 @@ def main(rank, args):
     model.cuda()
     l.info(f"model {model} is intialized")
     l.info(f"model parameters: {sum(p.numel() for p in model.parameters())}")
-    l.info(f"{sum(p.numel() for p in model.codec_lm.parameters())}")
+    l.info(f"Decoder LM parameters: {sum(p.numel() for p in model.codec_lm.parameters())}")
     for p in args.init_param:
         l.info(f"Loading pretrained params from {p}")
         load_pretrained_model(
