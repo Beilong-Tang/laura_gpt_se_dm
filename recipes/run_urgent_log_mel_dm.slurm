@@ -28,7 +28,7 @@ module load compiler/dtk/24.04
 ###########
 
 name="urgent2025"
-config_path=exp/$name/config_no_aug.yaml
+config_path=exp/$name/config_log_mel.yaml
 resume=""
 
 ###############
