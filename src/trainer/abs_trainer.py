@@ -13,7 +13,7 @@ from utils.utils import Logger
 
 from .helper import dict_to_str, save
 from utils.hinter import hint_once 
-from src.utils.postprocess import MaxLength, CleanNoisyFilter
+from utils.postprocess import MaxLength, CleanNoisyFilter
 from funcodec.bin.codec_inference import Speech2Token
 from funcodec.modules.nets_utils import pad_list
 
