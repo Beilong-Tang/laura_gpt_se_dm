@@ -131,7 +131,7 @@ class Trainer:
         _data["text"], _data["text_lengths"] = self.mel_process.mel(
             _data["text"], _data["text_lengths"]
         )
-            
+        _rank = torch.distributed.get_rank()
         ## Simply outputing the shape
         data_shape = []
         for key, value in _data.items():
@@ -140,16 +140,16 @@ class Trainer:
         ## 4. Apply Funcodec Extraction on _data['codec']
         res = []
         res_len = []
-        for i, audio in enumerate(_data['codec']): # T
-            audio = audio[:_data['codec_lengths'][i].item()]
-            audio = audio.unsqueeze(0).unsqueeze(0) # [1,1,T]
-            hint_once(f"Doing processing!! {','.join(data_shape)} on rank {torch.distributed.get_rank()}", "data_process")
-            codec = self.funcodec(audio, run_mod = "encode")[0][0].permute(1,2,0).squeeze(0) # [T, N]
-            res.append(codec)
-            res_len.append(len(codec))
-            dprint(f"CODEC: {codec.shape}")
-            
-        res = pad_list(res, 0).to(torch.long) ## Make it to be a long value
+        with torch.no_grad():
+            for i, audio in enumerate(_data['codec']): # T
+                audio = audio[:_data['codec_lengths'][i].item()]
+                audio = audio.unsqueeze(0).unsqueeze(0).cuda() # [1,1,T]
+                dprint(f"CODEC on rank {_rank} iter:{i}, audio: {audio.shape}")
+                codec = self.funcodec(audio, run_mod = "encode")[0][0].permute(1,2,0).squeeze(0) # [T, N]
+                res.append(codec.cpu())
+                res_len.append(len(codec))
+                dprint(f"CODEC on rank {_rank} iter:{i}, codec: {codec.shape}")
+            res = pad_list(res, 0).to(torch.long) ## Make it to be a long value
         res_len = torch.tensor(res_len, dtype=torch.long)
         _data['codec'] = res 
         _data['codec_lengths'] = res_len
