@@ -99,6 +99,7 @@ class Trainer:
         ## Funcodec Model to extract features
         self.funcodec = Speech2Token(config_file = config.codec['codec'], model_file = config.codec['model'], device='cuda')
         self.funcodec.eval()
+        self.funcodec.cuda()
 
         if resume != "":
             ## loading ckpt
@@ -148,8 +149,8 @@ class Trainer:
                 audio = audio[:_data['codec_lengths'][i].item()]
                 audio = audio.unsqueeze(0).unsqueeze(0).cuda() # [1,1,T]
                 dprint(f"CODEC on rank {_rank} iter:{i}, audio: {audio.shape}")
-                codec = self.funcodec(audio, run_mod = "encode")[0][0].permute(1,2,0).squeeze(0) # [T, N]
-                res.append(codec.cpu())
+                codec = self.funcodec(audio, run_mod = "encode")[0][0].permute(1,2,0).squeeze(0).cpu() # [T, N]
+                res.append(codec)
                 res_len.append(len(codec))
                 dprint(f"CODEC on rank {_rank} iter:{i}, codec: {codec.shape}")
         dprint(f"After Funcodec on rank {_rank}, Ready to process")
