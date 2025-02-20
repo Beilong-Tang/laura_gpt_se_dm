@@ -37,7 +37,7 @@ valid_data_path_and_name_and_type: [
 conf_dm_noise: src/conf_dm_noise/urgent_2025_simulation_train.yaml
 
 grad_clip: 5
-seed: 1234
+seed: 456
 init: null
 
 # input related
