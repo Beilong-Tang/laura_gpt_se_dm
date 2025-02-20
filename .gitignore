@@ -2,7 +2,7 @@
 *.txt
 *.err
 __pycache__/
-*test*
+test*
 *.pt
 ckpt/*
 *.pt
