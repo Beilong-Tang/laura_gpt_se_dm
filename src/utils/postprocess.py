@@ -28,7 +28,7 @@ class MaxLength():
         else:
             _res_dict = {}
             for _key in self.field_list:
-                res=[]
+                res= []
                 res_len = []
                 batch = data[_key]
                 batch_lens = data[_key+"_lengths"]
