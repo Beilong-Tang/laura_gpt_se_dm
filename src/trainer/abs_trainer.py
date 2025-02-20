@@ -91,7 +91,7 @@ class Trainer:
         
         ## Max Length Constraint
         self.max_len_filter = MaxLength(['text', 'codec'], 
-                                        int(config.audio_max_duration * config.codec_token_rate) * 16000)
+                                        int(config.audio_max_duration * 16000))
 
         ## Clean Noisy Filter
         self.clean_noisy_filter = CleanNoisyFilter()
@@ -126,7 +126,7 @@ class Trainer:
         ## Note that the text is composed of [clean,noisy], and clean noisy should have the same length
         ## 1. Extract Clean Speech and Noisy Speech
         _rank = torch.distributed.get_rank()
-        dprint("")
+        dprint(f"data keys: {[k for k in _data]}")
         _data['text'], _data['text_lengths'], _data['codec'], _data['codec_lengths'] = self.clean_noisy_filter(_data['text'], _data['text_lengths'])
         ## 2. Limit the maximum length
         _data = self.max_len_filter(_data)
