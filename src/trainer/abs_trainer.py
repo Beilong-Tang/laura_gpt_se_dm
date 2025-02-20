@@ -17,6 +17,8 @@ from utils.postprocess import MaxLength, CleanNoisyFilter
 from funcodec.bin.codec_inference import Speech2Token
 from funcodec.modules.nets_utils import pad_list
 
+from utils.dprint import dprint
+
 
 def gather_tensors(tensor):
     """
@@ -134,16 +136,19 @@ class Trainer:
         data_shape = []
         for key, value in _data.items():
             data_shape.append(f"{key}:{value.shape}")
-        hint_once(f"before funcodec batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}", "data_shape")
+        hint_once(f"before funcodec batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}", "data_before_shape")
         ## 4. Apply Funcodec Extraction on _data['codec']
         res = []
         res_len = []
         for i, audio in enumerate(_data['codec']): # T
             audio = audio[:_data['codec_lengths'][i].item()]
             audio = audio.unsqueeze(0).unsqueeze(0) # [1,1,T]
+            hint_once(f"Doing processing!! {','.join(data_shape)} on rank {torch.distributed.get_rank()}", "data_process")
             codec = self.funcodec(audio, run_mod = "encode")[0][0].permute(1,2,0).squeeze(0) # [T, N]
             res.append(codec)
             res_len.append(len(codec))
+            dprint(f"CODEC: {codec.shape}")
+            
         res = pad_list(res, 0).to(torch.long) ## Make it to be a long value
         res_len = torch.tensor(res_len, dtype=torch.long)
         _data['codec'] = res 
@@ -154,7 +159,7 @@ class Trainer:
         for key, value in _data.items():
             data_shape.append(f"{key}:{value.shape}")
             _data[key] = value.cuda()
-        hint_once(f"batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}", "data_shape")
+        hint_once(f"batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}", "data_after_shape")
         
         ## Process Mel Spectrogram ##
         loss, stats, weight = self.model(**_data)
