@@ -106,7 +106,7 @@ model_conf:
         head: 8
         unit: 2048
         # layer: 12
-        layer: 6
+        layer: 3
         # layer: 10
         dropout_rate: 0.1
         pe_type: uni
