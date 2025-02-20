@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J run_laura_se_urgent2025_log_mel_dm_test
-#SBATCH -N 4
+#SBATCH -N 2
 #SBATCH -o log_urgent2025_log_mel_dm_test.out
 #SBATCH -e log_urgent2025_log_mel_dm_test.err
 #SBATCH -p kshdnormal
