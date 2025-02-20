@@ -141,6 +141,7 @@ class Trainer:
 
         res = []
         res_len = []
+        dprint(f"Batch on rank {_rank}, {len(_data['codec'])}")
         with torch.no_grad():
             for i, audio in enumerate(_data['codec']): # T
                 audio = audio[:_data['codec_lengths'][i].item()]
