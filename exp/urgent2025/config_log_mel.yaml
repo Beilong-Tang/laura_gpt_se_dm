@@ -34,7 +34,7 @@ valid_data_path_and_name_and_type: [
 #########################################################################################
 ## conf_dm_noise, if specified, use Dynamic Mixing for the Noise Following Urgent 2025 ##
 #########################################################################################
-conf_dm_noise: src/conf_dm_noise/urgent_2025_simulation_train.yaml
+conf_dm_noise: src/conf_dm_noise/urgent_2025_no_aug.yaml
 
 grad_clip: 5
 seed: 456

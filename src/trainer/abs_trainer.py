@@ -124,9 +124,7 @@ class Trainer:
         # )
         ## Preprocess:
         ## Note that the text is composed of [clean,noisy], and clean noisy should have the same length
-        ## 1. Extract Clean Speech and Noisy Speech
-        _rank = torch.distributed.get_rank()
-        dprint(f"data keys: {[k for k in _data]}")
+        ## 1. Extract Clean Speech and Noisy Speech 
         _data['text'], _data['text_lengths'], _data['codec'], _data['codec_lengths'] = self.clean_noisy_filter(_data['text'], _data['text_lengths'])
         ## 2. Limit the maximum length
         _data = self.max_len_filter(_data)
@@ -146,20 +144,14 @@ class Trainer:
 
         res = []
         res_len = []
-        dprint(f"Batch on rank {_rank}, {len(_data['codec'])}")
         with torch.no_grad():
             for i, audio in enumerate(_data['codec']): # T
                 audio = audio[:_data['codec_lengths'][i].item()]
                 audio = audio.unsqueeze(0).unsqueeze(0).cuda() # [1,1,T]
-                dprint(f"CODEC on rank {_rank} iter:{i}, audio: {audio.shape}")
                 codec = self.funcodec(audio, run_mod = "encode")[0][0].permute(1,2,0).squeeze(0).cpu() # [T, N]
                 res.append(codec)
                 res_len.append(len(codec))
-                dprint(f"CODEC on rank {_rank} iter:{i}, codec: {codec.shape}")
-        dprint(f"After Funcodec on rank {_rank}, Ready to process")
-        dprint(f"After Funcodec on rank {_rank}, res len {res_len}")
         res = pad_list(res, 0).to(torch.long) ## Make it to be a long value
-        dprint(f"After Funcodec on rank {_rank} and pad_list, res shape: {res.shape}")
         res_len = torch.tensor(res_len, dtype=torch.long)
         _data['codec'] = res 
         _data['codec_lengths'] = res_len
