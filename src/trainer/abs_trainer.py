@@ -141,6 +141,9 @@ class Trainer:
         hint_once(f"before funcodec batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}", "data_before_shape")
         ## 4. Apply Funcodec Extraction on _data['codec']
 
+        for key,value in _data.items():
+            _data[key] = value[:3]
+
         res = []
         res_len = []
         dprint(f"Batch on rank {_rank}, {len(_data['codec'])}")
