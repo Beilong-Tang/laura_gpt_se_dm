@@ -138,7 +138,8 @@ class Trainer:
         ## 4. Apply Funcodec Extraction on _data['codec']
         res = []
         res_len = []
-        for audio in _data['codec']: # T
+        for i, audio in enumerate(_data['codec']): # T
+            audio = audio[:_data['codec_lengths'][i].item()]
             audio = audio.unsqueeze(0).unsqueeze(0) # [1,1,T]
             codec = self.funcodec(audio, run_mod = "encode")[0][0].permute(1,2,0).squeeze(0) # [T, N]
             res.append(codec)
