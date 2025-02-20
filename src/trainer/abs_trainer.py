@@ -138,6 +138,7 @@ class Trainer:
             data_shape.append(f"{key}:{value.shape}")
         hint_once(f"before funcodec batch data shape {','.join(data_shape)} on rank {torch.distributed.get_rank()}", "data_before_shape")
         ## 4. Apply Funcodec Extraction on _data['codec']
+
         res = []
         res_len = []
         with torch.no_grad():
@@ -149,7 +150,10 @@ class Trainer:
                 res.append(codec.cpu())
                 res_len.append(len(codec))
                 dprint(f"CODEC on rank {_rank} iter:{i}, codec: {codec.shape}")
-            res = pad_list(res, 0).to(torch.long) ## Make it to be a long value
+        dprint(f"After Funcodec on rank {_rank}, Ready to process")
+        dprint(f"After Funcodec on rank {_rank}, res len {res_len}")
+        res = pad_list(res, 0).to(torch.long) ## Make it to be a long value
+        dprint(f"After Funcodec on rank {_rank} and pad_list, res shape: {res.shape}")
         res_len = torch.tensor(res_len, dtype=torch.long)
         _data['codec'] = res 
         _data['codec_lengths'] = res_len
